@@ -1,0 +1,1579 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Governança de TI 2025 - Estudo Guido</title>
+    <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
+    <!-- Inclui os ícones (Lucide Icons) -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <!-- Fonte Inter (melhora a estética) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+    
+    <!-- --- ESTILIZAÇÃO (CSS) --- -->
+    <style>
+        :root {
+            /* Cores adaptadas do seu App.css */
+            --primary-dark: #1e3a8a; /* blue-900 */
+            --primary-medium: #1e40af; /* blue-800 */
+            --primary-light: #2563eb; /* blue-600 */
+            --primary-lighter: #dbeafe; /* blue-100 */
+
+            --text-main: #0f172a; /* slate-900 */
+            --text-secondary: #475569; /* slate-600 */
+            --text-white: #ffffff;
+
+            --bg-main: #f8fafc; /* slate-50 */
+            --bg-card: #ffffff;
+            --bg-hover: #f1f5f9;
+
+            --border-color: #e2e8f0; /* slate-200 */
+
+            --success-bg: #dcfce7; /* green-100 */
+            --success-text: #166534; /* green-800 */
+            --success-border: #22c55e; /* green-500 */
+
+            --error-bg: #fee2e2; /* red-100 */
+            --error-text: #991b1b; /* red-800 */
+            --error-border: #f87171; /* red-400 */
+
+            --warning-border: #facc15; /* yellow-400 */
+
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+
+            --radius: 0.75rem; /* 12px */
+            --max-width: 64rem; /* 1024px */
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            min-height: 100vh;
+        }
+
+        /* --- Layout Principal --- */
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            width: 100%;
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .main-content {
+                padding: 1.5rem;
+            }
+        }
+
+        /* --- Header e Navegação --- */
+        .header {
+            background-color: var(--primary-dark);
+            color: var(--text-white);
+            box-shadow: var(--shadow-lg);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .header-content {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-icon {
+            color: #93c5fd; /* blue-300 */
+        }
+
+        .app-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            line-height: 1.25;
+            margin: 0;
+        }
+
+        .app-subtitle {
+            font-size: 0.75rem;
+            color: #bfdbfe; /* blue-200 */
+            margin: 0;
+        }
+
+        .mobile-menu-btn {
+            display: block;
+            background: none;
+            border: none;
+            color: white;
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+        }
+
+        .desktop-nav {
+            display: none;
+            gap: 0.5rem;
+        }
+
+        .mobile-nav-dropdown {
+            display: none; /* Inicia oculto, será mostrado via JS em mobile */
+            background-color: var(--primary-medium);
+            border-top: 1px solid #374151;
+            padding: 0.5rem;
+        }
+
+        .nav-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        @media (min-width: 768px) {
+            .mobile-menu-btn { display: none; }
+            .desktop-nav { display: flex; }
+            .mobile-nav-dropdown { display: none !important; }
+        }
+
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .nav-btn.active {
+            background-color: var(--bg-card);
+            color: var(--primary-dark);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .nav-btn.inactive {
+            background-color: transparent;
+            color: #dbeafe;
+        }
+
+        .nav-btn.inactive:hover {
+            background-color: var(--primary-medium);
+        }
+
+        /* Estilos para o menu mobile aberto */
+        .app-container.menu-open .mobile-nav-dropdown {
+            display: block;
+        }
+
+        .mobile-nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            width: 100%;
+            border-radius: 0.5rem;
+            text-align: left;
+            border: none;
+            cursor: pointer;
+        }
+
+        .mobile-nav-btn.active {
+            background-color: var(--primary-dark);
+            color: var(--text-white);
+            font-weight: 700;
+        }
+
+        .mobile-nav-btn.inactive {
+            background-color: transparent;
+            color: #dbeafe;
+        }
+
+        .mobile-nav-btn.inactive:hover {
+            background-color: #374151;
+        }
+
+        /* --- Footer --- */
+        .footer {
+            background-color: #e2e8f0;
+            color: var(--text-secondary);
+            padding: 1.5rem 0;
+            text-align: center;
+            font-size: 0.875rem;
+        }
+
+        .footer-sub {
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+        }
+
+        /* --- Componentes Comuns --- */
+        .section-header {
+            background-color: var(--bg-card);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin: 0 0 0.5rem 0;
+        }
+
+        .section-desc {
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        /* --- Study Guide --- */
+        .study-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .topic-card {
+            background-color: var(--bg-card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+
+        .topic-header {
+            background-color: var(--bg-main);
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .topic-title {
+            font-weight: 700;
+            font-size: 1.125rem;
+            color: var(--primary-dark);
+            margin: 0;
+        }
+
+        .topic-content {
+            padding: 1.5rem;
+            line-height: 1.6;
+            color: var(--text-main);
+        }
+
+        .topic-content strong {
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .topic-content br {
+            display: block; /* Garante que <br> funcione como quebra de linha em flex/grid */
+            content: "";
+            margin-bottom: 0.5em; /* Espaço entre as linhas */
+        }
+
+        /* --- Flashcards --- */
+        .flashcard-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 60vh;
+            gap: 2rem;
+        }
+
+        .flashcard-status {
+            text-align: center;
+        }
+
+        .flashcard-scene {
+            width: 100%;
+            max-width: 36rem;
+            height: 20rem;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .flashcard-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .flashcard-inner.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden; /* Oculta a face de trás */
+            border-radius: 1rem;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .flashcard-front {
+            background-color: var(--bg-card);
+            border: 2px solid var(--primary-lighter);
+        }
+
+        .flashcard-back {
+            background-color: var(--primary-dark);
+            color: var(--text-white);
+            transform: rotateY(180deg);
+        }
+
+        .tag {
+            position: absolute;
+            top: 1rem;
+            left: 1.5rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+        }
+
+        .tag.light {
+            background-color: #eff6ff;
+            color: var(--primary-light);
+        }
+
+        .tag.dark {
+            background-color: var(--primary-medium);
+            color: var(--primary-lighter);
+        }
+
+        .card-text {
+            font-size: 1.25rem;
+            font-weight: 500;
+            text-align: center;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        @media (min-width: 768px) {
+            .card-text { font-size: 1.5rem; }
+        }
+
+        .hint-text {
+            position: absolute;
+            bottom: 1.5rem;
+            font-size: 0.75rem;
+            color: var(--text-secondary); /* Corrigido para ser visível no card branco */
+        }
+
+        .flashcard-back .hint-text {
+            color: var(--primary-lighter); /* Corrigido para ser visível no card azul */
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .control-btn {
+            padding: 0.75rem;
+            border-radius: 9999px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            width: 3rem;
+            height: 3rem;
+        }
+
+        .control-btn.secondary {
+            background-color: var(--bg-card);
+            color: var(--text-secondary);
+        }
+
+        .control-btn.secondary:hover {
+            background-color: var(--bg-hover);
+        }
+
+        .control-btn.primary {
+            background-color: var(--primary-light);
+            color: var(--text-white);
+            border: none;
+        }
+
+        .control-btn.primary:hover {
+            background-color: var(--primary-medium);
+        }
+
+        /* --- Quiz --- */
+        .quiz-container {
+            max-width: 48rem;
+            margin: 0 auto;
+        }
+
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .quiz-counter {
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .quiz-tag {
+            background-color: var(--primary-lighter);
+            color: var(--primary-dark);
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+        }
+
+        .question-card {
+            background-color: var(--bg-card);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+            margin-bottom: 1.5rem;
+        }
+
+        @media (min-width: 768px) {
+            .question-card { padding: 2rem; }
+        }
+
+        .question-text {
+            font-size: 1.25rem;
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+            margin-top: 0;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .option-btn {
+            width: 100%;
+            text-align: left;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-card);
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-main);
+        }
+
+        .option-btn:hover:not(:disabled) {
+            background-color: var(--bg-hover);
+        }
+
+        .option-btn.selected {
+            background-color: #eff6ff;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 1px var(--primary-light);
+        }
+
+        .option-btn.correct {
+            background-color: #f0fdf4; /* green-50 */
+            border-color: var(--success-border);
+            color: var(--success-text);
+            font-weight: 500;
+        }
+
+        .option-btn.incorrect {
+            background-color: #fef2f2; /* red-50 */
+            border-color: #fca5a5;
+            color: var(--error-text);
+        }
+
+        .option-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .feedback-card {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            gap: 0.75rem;
+            align-items: flex-start;
+        }
+
+        .feedback-card svg {
+            min-width: 1.5rem;
+            min-height: 1.5rem;
+        }
+
+        .feedback-card.success {
+            background-color: var(--success-bg);
+            color: var(--success-text);
+        }
+
+        .feedback-card.error {
+            background-color: var(--error-bg);
+            color: var(--error-text);
+        }
+
+        .feedback-content p {
+            margin: 0;
+        }
+
+        .feedback-title {
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+            display: block;
+        }
+
+        .feedback-explanation {
+            font-size: 0.875rem;
+            opacity: 0.9;
+        }
+
+        .quiz-actions {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .action-btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 700;
+            color: var(--text-white);
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .action-btn.confirm {
+            background-color: var(--primary-dark);
+        }
+
+        .action-btn.confirm:hover {
+            background-color: var(--primary-medium);
+        }
+
+        .action-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .action-btn.next {
+            background-color: var(--primary-light);
+        }
+
+        .action-btn.next:hover {
+            background-color: var(--primary-medium);
+        }
+
+        /* --- Quiz Results --- */
+        .results-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem 0;
+            gap: 1.5rem;
+        }
+
+        .results-card {
+            background-color: var(--bg-card);
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: var(--shadow-lg);
+            text-align: center;
+            width: 100%;
+            max-width: 28rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .score-percent {
+            font-size: 3.75rem;
+            font-weight: 900;
+            color: var(--primary-light);
+            margin: 1rem 0;
+        }
+
+        .restart-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+            padding: 0.75rem;
+            background-color: var(--primary-light);
+            color: var(--text-white);
+            border-radius: 0.5rem;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .restart-btn:hover {
+            background-color: var(--primary-medium);
+        }
+
+        /* --- Tips --- */
+        .tips-container {
+            max-width: 56rem;
+            margin: 0 auto;
+        }
+
+        .tips-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .tips-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .tips-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .tip-card {
+            background-color: var(--bg-card);
+            padding: 1.25rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--warning-border);
+            transition: box-shadow 0.2s;
+        }
+
+        .tip-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .tip-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+        }
+
+        .tip-title {
+            font-weight: 700;
+            font-size: 1.125rem;
+            color: var(--text-main);
+            margin: 0;
+        }
+
+        .tip-tag {
+            font-size: 0.625rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            background-color: #f1f5f9;
+            color: var(--text-secondary);
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+        }
+
+        .tip-desc {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            line-height: 1.6;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="app-root" class="app-container">
+        <!-- O conteúdo será injetado aqui pelo JavaScript -->
+    </div>
+
+    <!-- --- LÓGICA E CONTEÚDO (JAVASCRIPT) --- -->
+    <script>
+        // --- DADOS DA APLICAÇÃO (Adaptados de data.ts e types.ts) ---
+
+        const AppTab = {
+            GUIDE: 'GUIDE',
+            FLASHCARDS: 'FLASHCARDS',
+            QUIZ: 'QUIZ',
+            TIPS: 'TIPS'
+        };
+
+        const studyTopics = [
+            {
+                title: "1. Fundamentos de Governança de TI e Alinhamento Estratégico",
+                content: `
+**Conceito Fundamental:**
+Governança de TI não é apenas sobre tecnologia, é sobre **tomada de decisão** e **responsabilidade**. É um subconjunto da governança corporativa focado em alinhar a TI com os objetivos do negócio.
+
+**Diferença Crucial: Governança vs. Gestão (Baseado no COBIT 2019)**
+* **Governança (Direção):** Exerce a função de **Avaliar, Dirigir e Monitorar (EDM)**. É responsabilidade do Conselho de Administração/Alta Direção.
+    * *Pergunta:* "Estamos fazendo as coisas certas?" (Eficácia, Estratégia).
+* **Gestão (Execução):** Exerce a função de **Planejar, Construir, Executar e Monitorar (PBRM)**. É responsabilidade da Diretoria Executiva/Gerência.
+    * *Pergunta:* "Estamos fazendo as coisas da maneira certa?" (Eficiência, Operação).
+
+**Os 5 Domínios de Foco da Governança:**
+1.  **Alinhamento Estratégico:** Garantir que a TI suporte e habilite a estratégia de negócios.
+2.  **Entrega de Valor:** Garantir que a TI entregue os benefícios prometidos, otimizando custos.
+3.  **Gestão de Riscos:** Identificar, avaliar e mitigar riscos de TI que impactam o negócio.
+4.  **Gestão de Recursos:** Otimização de recursos críticos (aplicações, informação, infraestrutura e pessoas).
+5.  **Mensuração de Desempenho:** Uso de BSC (Balanced Scorecard) e KPIs para monitorar a realização da estratégia.
+                `
+            },
+            {
+                title: "2. ITIL v4 - O Sistema de Valor de Serviço",
+                content: `
+**Conceito Central:** Co-criação de valor. O valor não é entregue unilateralmente, mas co-criado através de uma colaboração ativa entre provedor e consumidor.
+
+**Os 4 Dimensões do Gerenciamento de Serviço:**
+1.  **Organizações e Pessoas:** Cultura, papéis, habilidades e estrutura organizacional.
+2.  **Informação e Tecnologia:** Sistemas, ferramentas, dados e segurança.
+3.  **Parceiros e Fornecedores:** Contratos, relacionamentos e cadeia de suprimentos.
+4.  **Fluxos de Valor e Processos:** Como as atividades são organizadas para criar valor.
+
+**SVS (Sistema de Valor de Serviço):**
+O "envelope" que contém tudo. Componentes:
+1.  **Princípios Orientadores (7):** Foco no valor, Comece onde você está, Progrida iterativamente com feedback, Colabore e promova visibilidade, Pense e trabalhe holisticamente, Mantenha simples e prático, Otimize e automatize.
+2.  **Governança:** O meio pelo qual a organização é dirigida e controlada.
+3.  **Cadeia de Valor de Serviço (SVC):** O modelo operacional com 6 atividades chave:
+    * *Planejar:* Visão compartilhada.
+    * *Melhorar:* Melhoria contínua.
+    * *Engajar:* Entendimento das necessidades dos stakeholders.
+    * *Desenho e Transição:* Produtos atendem expectativas de qualidade/custo/tempo.
+    * *Obter/Construir:* Disponibilidade de componentes de serviço.
+    * *Entregar e Suportar:* Serviços entregues conforme acordado.
+4.  **Práticas (34):** Conjuntos de recursos organizacionais (ex: Incidentes, Problemas, Mudanças).
+5.  **Melhoria Contínua:** Modelo recorrente para garantir alinhamento.
+
+**Práticas Chave para a Prova:**
+* **Incidente:** Restaurar a operação normal o mais rápido possível (Workaround é aceitável).
+* **Problema:** Identificar causa raiz para prevenir recorrência (Erro Conhecido).
+* **Mudança:** Maximizar mudanças bem-sucedidas; avaliar riscos; Change Authority.
+* **Nível de Serviço:** Definir metas claras (SLAs) baseadas na visão do cliente.
+* **Central de Serviço:** Ponto único de contato (SPOC).
+                `
+            },
+            {
+                title: "3. COBIT 2019 - Framework de Governança e Gestão",
+                content: `
+**Princípios do Sistema de Governança:**
+1.  Prover Valor às Partes Interessadas.
+2.  Abordagem Holística.
+3.  Sistema de Governança Dinâmico.
+4.  Governança Distinta da Gestão.
+5.  Adaptado às Necessidades da Empresa.
+6.  Sistema de Ponta a Ponta.
+
+**Cascata de Metas (Goals Cascade):**
+É o mecanismo que traduz necessidades em ações:
+1.  Motivadores e Necessidades das Partes Interessadas.
+2.  Metas Corporativas (Enterprise Goals).
+3.  Metas de Alinhamento (Alignment Goals).
+4.  Objetivos de Governança e Gestão.
+
+**Os 40 Objetivos (Core Model):**
+* **EDM (Governança):** Avaliar, Dirigir, Monitorar (5 objetivos). Ex: EDM03 - Assegurar Otimização de Riscos.
+* **APO (Gestão - Planejamento):** Alinhar, Planejar, Organizar (14 objetivos). Ex: APO12 - Gerenciar Riscos, APO13 - Gerenciar Segurança.
+* **BAI (Gestão - Construção):** Construir, Adquirir, Implementar (11 objetivos). Ex: BAI06 - Gerenciar Mudanças de TI.
+* **DSS (Gestão - Operação):** Entregar, Servir, Suportar (6 objetivos). Ex: DSS01 - Gerenciar Operações, DSS02 - Gerenciar Incidentes.
+* **MEA (Gestão - Monitoramento):** Monitorar, Avaliar, Analisar (4 objetivos). Ex: MEA03 - Gerenciar Conformidade.
+
+**Fatores de Design:**
+Parâmetros que influenciam o desenho do sistema (ex: Estratégia, Tamanho da empresa, Perfil de risco, Cultura, Conformidade).
+                `
+            },
+            {
+                title: "4. PMBOK 7ª Edição - Princípios e Domínios",
+                content: `
+**Mudança de Paradigma:**
+Sai o foco estrito em "Processos/ITTOs" (6ª Ed) e entra o foco em **Princípios** e **Domínios de Desempenho** (7ª Ed).
+
+**12 Princípios de Entrega de Projetos:**
+1.  **Stewardship:** Ser um administrador diligente, respeitoso e atencioso.
+2.  **Equipe:** Criar um ambiente colaborativo.
+3.  **Partes Interessadas:** Engajar-se efetivamente.
+4.  **Valor:** Focar no valor.
+5.  **Pensamento Sistêmico:** Reconhecer e responder às interações do sistema.
+6.  **Liderança:** Demonstrar comportamentos de liderança.
+7.  **Tailoring:** Adaptar de acordo com o contexto.
+8.  **Qualidade:** Incorporar qualidade nos processos e entregas.
+9.  **Complexidade:** Navegar na complexidade.
+10. **Risco:** Otimizar as respostas aos riscos.
+11. **Adaptabilidade e Resiliência:** Adotar capacidade de adaptação.
+12. **Mudança:** Permitir a mudança para alcançar o estado futuro previsto.
+
+**8 Domínios de Desempenho:**
+Áreas de foco para demonstrar o comportamento do projeto.
+1.  Partes Interessadas.
+2.  Equipe.
+3.  Abordagem de Desenvolvimento e Ciclo de Vida.
+4.  Planejamento.
+5.  Trabalho do Projeto.
+6.  Entrega.
+7.  Medição.
+8.  Incerteza.
+                `
+            },
+            {
+                title: "5. Controles Internos, Auditoria e Conformidade",
+                content: `
+**Controles Internos de TI:**
+* **ITGCs (Controles Gerais de TI):** Aplicam-se a todos os sistemas. Ex: Segurança lógica, gestão de mudanças, backup, operação do data center.
+* **Controles de Aplicação:** Específicos de um software. Ex: Validação de campo de entrada, totais de controle, numeração sequencial.
+
+**Segregação de Funções (SoD):**
+Controle preventivo fundamental. Nenhuma pessoa deve ter autoridade para executar duas ou mais etapas sensíveis de uma transação.
+* *Exemplo Clássico:* Quem desenvolve (Dev) não deve ter acesso para implantar em produção (Ops). Quem solicita um pagamento não deve aprová-lo.
+
+**Auditoria de TI:**
+* **Auditoria Interna:** Foco em melhoria de processos, consultoria e avaliação de riscos para a alta gestão.
+* **Auditoria Externa:** Foco na veracidade das demonstrações financeiras ou conformidade regulatória, realizada por terceiros independentes.
+
+**Conformidade Normativa:**
+* **LGPD:** Proteção de dados pessoais. Papéis: Controlador, Operador, Encarregado (DPO). Bases legais para tratamento.
+* **NIST:** Padrões de segurança.
+* **ISO 27001:** Gestão da Segurança da Informação.
+                `
+            },
+            {
+                title: "6. NIST CSF 2.0 - Cibersegurança",
+                content: `
+**Evolução:** A versão 2.0 adicionou a função "GOVERN" e expandiu o escopo para qualquer organização (não apenas infraestrutura crítica).
+
+**As 6 Funções (O Núcleo):**
+1.  **GOVERN (Governar):** A estratégia de gestão de riscos de cibersegurança, expectativas e políticas são estabelecidas, comunicadas e monitoradas.
+2.  **IDENTIFY (Identificar):** Compreensão do contexto de negócios, ativos, e riscos aos sistemas, pessoas e dados.
+3.  **PROTECT (Proteger):** Salvaguardas para garantir a entrega de serviços críticos. (Ex: Controle de acesso, treinamento, criptografia).
+4.  **DETECT (Detectar):** Definir atividades para identificar a ocorrência de um evento de cibersegurança. (Ex: Monitoramento contínuo).
+5.  **RESPOND (Responder):** Ações para tomar quando um evento é detectado. (Ex: Análise, mitigação, comunicação).
+6.  **RECOVER (Recuperar):** Manter planos de resiliência e restaurar capacidades ou serviços prejudicados.
+
+**Tiers (Camadas):** Descrevem o rigor das práticas de cibersegurança (do Parcial ao Adaptável).
+**Profiles (Perfis):** Estado atual ("As Is") vs Estado Desejado ("To Be").
+                `
+            }
+        ];
+
+        const flashcardsData = [
+            // Governança Geral
+            { id: 1, topic: "Governança", front: "Qual a diferença fundamental entre Governança e Gestão de TI?", back: "Governança (EDM) avalia, dirige e monitora (estratégico). Gestão (PBRM) planeja, constrói, executa e monitora (executivo)." },
+            { id: 2, topic: "Governança", front: "O que é Alinhamento Estratégico?", back: "Garantir que os investimentos de TI suportem e habilitem os objetivos de negócio da organização." },
+            { id: 3, topic: "Governança", front: "Quais são os 5 domínios de foco da Governança de TI?", back: "Alinhamento Estratégico, Entrega de Valor, Gestão de Riscos, Gestão de Recursos, Mensuração de Desempenho." },
+            { id: 4, topic: "Governança", front: "O que significa a sigla EDM na governança?", back: "Evaluate (Avaliar), Direct (Dirigir), Monitor (Monitorar)." },
+            { id: 5, topic: "Governança", front: "Qual o papel do Comitê de Estratégia de TI?", back: "Aconselhar o Conselho sobre a estratégia de TI e seu alinhamento com os objetivos de negócio." },
+            // ITIL 4 - Geral
+            { id: 6, topic: "ITIL 4", front: "Qual o principal objetivo do ITIL 4?", back: "Habilitar a co-criação de valor através de serviços facilitados pela TI." },
+            { id: 7, topic: "ITIL 4", front: "O que é o SVS?", back: "Sistema de Valor de Serviço. Descreve como todos os componentes e atividades trabalham juntos para criar valor." },
+            { id: 8, topic: "ITIL 4", front: "O que é a Cadeia de Valor de Serviço (SVC)?", back: "Modelo operacional central do SVS com 6 atividades: Planejar, Melhorar, Engajar, Design & Transição, Obter/Construir, Entregar & Suportar." },
+            { id: 9, topic: "ITIL 4", front: "Defina 'Serviço' no ITIL 4.", back: "Meio de permitir a co-criação de valor facilitando resultados que os clientes querem alcançar, sem gerenciar custos e riscos específicos." },
+            { id: 10, topic: "ITIL 4", front: "Quais são as 4 Dimensões do Gerenciamento de Serviço?", back: "1. Organizações e Pessoas; 2. Informação e Tecnologia; 3. Parceiros e Fornecedores; 4. Fluxos de Valor e Processos." },
+            // ITIL 4 - Princípios
+            { id: 11, topic: "ITIL 4", front: "Qual princípio orientador diz para não começar do zero?", back: "Comece onde você está (Start where you are)." },
+            { id: 12, topic: "ITIL 4", front: "Qual princípio foca na experiência do usuário?", back: "Foco no valor (Focus on value)." },
+            { id: 13, topic: "ITIL 4", front: "Qual princípio sugere evitar 'silos'?", back: "Colabore e promova visibilidade (Collaborate and promote visibility)." },
+            { id: 14, topic: "ITIL 4", front: "Qual princípio se relaciona com automação?", back: "Otimize e automatize (Optimize and automate)." },
+            { id: 15, topic: "ITIL 4", front: "Qual princípio sugere lançamentos menores e frequentes?", back: "Progrida iterativamente com feedback (Progress iteratively with feedback)." },
+            // ITIL 4 - Práticas
+            { id: 16, topic: "ITIL 4", front: "Defina 'Incidente'.", back: "Interrupção não planejada de um serviço ou redução na qualidade de um serviço." },
+            { id: 17, topic: "ITIL 4", front: "Defina 'Problema'.", back: "A causa raiz de um ou mais incidentes." },
+            { id: 18, topic: "ITIL 4", front: "O que é um 'Erro Conhecido'?", back: "Um problema que foi analisado e para o qual existe uma solução de contorno ou definitiva." },
+            { id: 19, topic: "ITIL 4", front: "Qual o objetivo da Central de Serviço (Service Desk)?", back: "Ser o ponto único de contato para os usuários relatarem incidentes, requisições e dúvidas." },
+            { id: 20, topic: "ITIL 4", front: "O que é uma 'Mudança Padrão'?", back: "Mudança de baixo risco, pré-autorizada e bem documentada (ex: reset de senha)." },
+            { id: 21, topic: "ITIL 4", front: "O que é uma 'Mudança Normal'?", back: "Mudança que precisa ser avaliada, autorizada e agendada seguindo um processo." },
+            { id: 22, topic: "ITIL 4", front: "O que é uma 'Mudança Emergencial'?", back: "Mudança que deve ser implementada o mais rápido possível (ex: correção de falha crítica), com processo de aprovação acelerado." },
+            { id: 23, topic: "ITIL 4", front: "Qual prática gerencia o ciclo de vida de todos os Itens de Configuração (CIs)?", back: "Gerenciamento de Configuração de Serviço." },
+            { id: 24, topic: "ITIL 4", front: "Qual a diferença entre Incidente e Requisição de Serviço?", back: "Incidente é uma falha/interrupção. Requisição é um pedido formal por algo previsto (ex: acesso, novo equipamento)." },
+            { id: 25, topic: "ITIL 4", front: "O que é SLA?", back: "Service Level Agreement (Acordo de Nível de Serviço). Documento que define as metas de nível de serviço acordadas." },
+            // COBIT 2019 - Estrutura
+            { id: 26, topic: "COBIT 2019", front: "O que é a Cascata de Metas (Goals Cascade)?", back: "Mecanismo que traduz necessidades dos stakeholders em metas corporativas, metas de alinhamento e objetivos de governança/gestão." },
+            { id: 27, topic: "COBIT 2019", front: "Quais são os 5 domínios do COBIT?", back: "EDM, APO, BAI, DSS, MEA." },
+            { id: 28, topic: "COBIT 2019", front: "O que significa o domínio APO?", back: "Align, Plan and Organize (Alinhar, Planejar e Organizar)." },
+            { id: 29, topic: "COBIT 2019", front: "O que significa o domínio BAI?", back: "Build, Acquire and Implement (Construir, Adquirir e Implementar)." },
+            { id: 30, topic: "COBIT 2019", front: "O que significa o domínio DSS?", back: "Deliver, Service and Support (Entregar, Servir e Suportar)." },
+            { id: 31, topic: "COBIT 2019", front: "O que significa o domínio MEA?", back: "Monitor, Evaluate and Assess (Monitorar, Avaliar e Analisar)." },
+            { id: 32, topic: "COBIT 2019", front: "O que são Fatores de Design?", back: "Fatores que influenciam o desenho do sistema de governança (ex: estratégia, tamanho, papel da TI, ameaças)." },
+            { id: 33, topic: "COBIT 2019", front: "Quantos Princípios do Sistema de Governança existem?", back: "Seis princípios (Valor, Holístico, Dinâmico, Distinto da Gestão, Adaptado, Ponta a Ponta)." },
+            { id: 34, topic: "COBIT 2019", front: "Qual domínio lida com Riscos e Segurança (gestão)?", back: "APO (especificamente APO12 e APO13)." },
+            { id: 35, topic: "COBIT 2019", front: "Qual domínio lida com Auditoria e Conformidade?", back: "MEA (Monitorar, Avaliar e Analisar)." },
+            // PMBOK 7 - Geral
+            { id: 36, topic: "PMBOK 7", front: "Qual a principal mudança estrutural do PMBOK 7?", back: "Mudança de 'Grupos de Processos e Áreas de Conhecimento' para 'Princípios e Domínios de Desempenho'." },
+            { id: 37, topic: "PMBOK 7", front: "O que é 'Tailoring'?", back: "Adaptação deliberada da abordagem de gerenciamento de projetos para torná-la mais adequada ao contexto." },
+            { id: 38, topic: "PMBOK 7", front: "Quantos Princípios de Entrega de Projeto existem?", back: "Doze (12)." },
+            { id: 39, topic: "PMBOK 7", front: "Quantos Domínios de Desempenho existem?", back: "Oito (8)." },
+            { id: 40, topic: "PMBOK 7", front: "O que é Stewardship (Administração)?", back: "Princípio de atuar com integridade, cuidado, confiabilidade e conformidade." },
+            // PMBOK 7 - Domínios e Conceitos
+            { id: 41, topic: "PMBOK 7", front: "Quais são as 3 abordagens de desenvolvimento?", back: "Preditiva (Cascata), Adaptativa (Ágil) e Híbrida." },
+            { id: 42, topic: "PMBOK 7", front: "O que é o Domínio de Desempenho da Incerteza?", back: "Trata das atividades associadas ao risco e à incerteza no projeto." },
+            { id: 43, topic: "PMBOK 7", front: "O que é o Domínio de Desempenho das Partes Interessadas?", back: "Foca no engajamento, comunicação e relacionamento com os stakeholders." },
+            { id: 44, topic: "PMBOK 7", front: "O que é MVP?", back: "Minimum Viable Product (Produto Mínimo Viável) - versão com funcionalidades mínimas para validar aprendizado." },
+            { id: 45, topic: "PMBOK 7", front: "O que é 'Rolling Wave Planning'?", back: "Planejamento em ondas sucessivas: planejar em detalhes o curto prazo e em alto nível o longo prazo." },
+            // Controles e Auditoria
+            { id: 46, topic: "Controles", front: "O que são ITGCs?", back: "Controles Gerais de TI (IT General Controls) que se aplicam a todos os sistemas (ex: acesso lógico, backup)." },
+            { id: 47, topic: "Controles", front: "O que são Controles de Aplicação?", back: "Controles específicos dentro de um software (ex: validação de campo, cálculo de totais)." },
+            { id: 48, topic: "Controles", front: "O que é Segregação de Funções (SoD)?", back: "Princípio onde nenhuma pessoa deve ter controle sobre todas as fases críticas de um processo para evitar fraudes." },
+            { id: 49, topic: "Controles", front: "Dê um exemplo de conflito de SoD.", back: "Um programador que tem acesso para alterar o código fonte e também para implantá-lo em produção." },
+            { id: 50, topic: "Auditoria", front: "Qual o foco da Auditoria Interna?", back: "Avaliação independente dos processos de governança, risco e controle para agregar valor à organização." },
+            { id: 51, topic: "Auditoria", front: "O que é um Teste de Substantivo?", back: "Teste que fundamenta a integridade de um processamento real (ex: verificar saldos, recálculo)." },
+            { id: 52, topic: "Auditoria", front: "O que é um Teste de Conformidade?", back: "Teste para verificar se um controle interno está operando conforme desenhado." },
+            { id: 53, topic: "Controles", front: "O que é Controle Preventivo?", back: "Controle desenhado para evitar que um erro ou irregularidade ocorra (ex: senha, firewall)." },
+            { id: 54, topic: "Controles", front: "O que é Controle Detectivo?", back: "Controle desenhado para identificar um erro após sua ocorrência (ex: log de auditoria, reconciliação)." },
+            { id: 55, topic: "Controles", front: "O que é Controle Corretivo?", back: "Controle para corrigir o impacto de um erro detectado (ex: restore de backup)." },
+            // NIST CSF 2.0
+            { id: 56, topic: "NIST CSF 2.0", front: "Quais são as 6 funções do NIST CSF 2.0?", back: "GOVERN, IDENTIFY, PROTECT, DETECT, RESPOND, RECOVER." },
+            { id: 57, topic: "NIST CSF 2.0", front: "Qual a nova função no NIST 2.0?", back: "GOVERN (Governar)." },
+            { id: 58, topic: "NIST CSF 2.0", front: "Qual função lida com o inventário de ativos?", back: "IDENTIFY (Identificar)." },
+            { id: 59, topic: "NIST CSF 2.0", front: "Qual função lida com o controle de acesso?", back: "PROTECT (Proteger)." },
+            { id: 60, topic: "NIST CSF 2.0", front: "Qual função lida com o monitoramento contínuo?", back: "DETECT (Detectar)." },
+            { id: 61, topic: "NIST CSF 2.0", front: "Qual função lida com a mitigação de incidentes?", back: "RESPOND (Responder)." },
+            { id: 62, topic: "NIST CSF 2.0", front: "Qual função lida com a restauração de backups?", back: "RECOVER (Recuperar)." },
+            { id: 63, topic: "NIST CSF 2.0", front: "O que são Tiers (Camadas)?", back: "Descrevem o grau de rigor e sofisticação das práticas de cibersegurança (1 a 4)." },
+            { id: 64, topic: "NIST CSF 2.0", front: "O que são Profiles (Perfis)?", back: "Alinhamento das funções do framework com os requisitos e objetivos de negócio (Perfil Atual vs Perfil Alvo)." },
+            // Conceitos Extras / Mistos
+            { id: 65, topic: "Conformidade", front: "O que é LGPD?", back: "Lei Geral de Proteção de Dados. Regula o tratamento de dados pessoais no Brasil." },
+            { id: 66, topic: "Conformidade", front: "Quem é o DPO?", back: "Data Protection Officer (Encarregado). O responsável pela comunicação entre controlador, titulares e ANPD." },
+            { id: 67, topic: "Conformidade", front: "O que é SOX (Sarbanes-Oxley)?", back: "Lei americana focada na confiabilidade de relatórios financeiros e controles internos." },
+            { id: 68, topic: "Gestão de Risco", front: "O que é Apetite ao Risco?", back: "Quantidade e tipo de risco que uma organização está disposta a aceitar para atingir seus objetivos." },
+            { id: 69, topic: "Gestão de Risco", front: "O que é Risco Residual?", back: "O risco que permanece após a implementação de controles ou respostas ao risco." },
+            { id: 70, topic: "Gestão de Risco", front: "Quais as 4 respostas a riscos negativos (ameaças)?", back: "Evitar, Mitigar, Transferir, Aceitar." },
+            { id: 71, topic: "Gestão de Risco", front: "Quais as 4 respostas a riscos positivos (oportunidades)?", back: "Explorar, Melhorar, Compartilhar, Aceitar." },
+            { id: 72, topic: "PMBOK 7", front: "O que é Valor no contexto de projetos?", back: "O resultado, benefício ou importância de algo." },
+            { id: 73, topic: "ITIL 4", front: "O que é 'Shift Left'?", back: "Mover atividades (como testes ou suporte) para mais cedo no ciclo de vida para melhorar a qualidade/eficiência." },
+            { id: 74, topic: "ITIL 4", front: "O que é CI (Item de Configuração)?", back: "Qualquer componente que precisa ser gerenciado para entregar um serviço de TI." },
+            { id: 75, topic: "ITIL 4", front: "O que é CMDB?", back: "Banco de Dados de Gerenciamento de Configuração. Armazena atributos e relacionamentos dos CIs." },
+            { id: 76, topic: "COBIT 2019", front: "O que é um 'Sistema de Governança Dinâmico'?", back: "Um sistema que pode ser alterado quando há mudanças na estratégia ou tecnologia (fator de design)." },
+            { id: 77, topic: "NIST CSF", front: "O que é Detecção de Anomalias?", back: "Identificar atividades que desviam do padrão esperado (baseline) da rede ou sistemas." },
+            { id: 78, topic: "PMBOK 7", front: "O que é Pensamento Sistêmico?", back: "Ver o projeto como um sistema de partes interativas e interdependentes." },
+            { id: 79, topic: "PMBOK 7", front: "O que é Entrega Contínua?", back: "Prática de entregar incrementos de produto frequentemente e com qualidade." },
+            { id: 80, topic: "Controles", front: "O que é o Princípio do Menor Privilégio?", back: "Usuários devem ter apenas os acessos estritamente necessários para suas funções." },
+            { id: 81, topic: "Controles", front: "O que é 'Defense in Depth' (Defesa em Profundidade)?", back: "Uso de múltiplas camadas de controles de segurança." },
+            { id: 82, topic: "ITIL 4", front: "Qual o foco da prática 'Gerenciamento de Liberação'?", back: "Disponibilizar serviços e funcionalidades novas ou alteradas para uso." },
+            { id: 83, topic: "ITIL 4", front: "Qual o foco da prática 'Gerenciamento de Implantação'?", back: "Mover hardware/software/componentes para ambientes de produção." },
+            { id: 84, topic: "COBIT 2019", front: "O que é I&T no contexto do COBIT?", back: "Informação e Tecnologia." },
+            { id: 85, topic: "COBIT 2019", front: "Qual a diferença entre Framework e Sistema de Governança?", back: "Framework é a estrutura teórica (COBIT). Sistema é a implementação prática na empresa." },
+            { id: 86, topic: "Governança", front: "O que é 'Shadow IT'?", back: "Uso de sistemas/soluções de TI sem o conhecimento ou aprovação da TI oficial." },
+            { id: 87, topic: "Governança", front: "O que é BSC (Balanced Scorecard)?", back: "Ferramenta de gestão estratégica que mede desempenho sob 4 perspectivas (Financeira, Cliente, Processos, Aprendizado)." },
+            { id: 88, topic: "NIST CSF", front: "O que é o 'Framework Core'?", back: "Conjunto de atividades de segurança cibernética, resultados desejados e referências (Funções, Categorias, Subcategorias)." },
+            { id: 89, topic: "PMBOK 7", front: "O que é Backlog?", back: "Lista ordenada de todo o trabalho que se conhece ser necessário no projeto." },
+            { id: 90, topic: "PMBOK 7", front: "O que é Burn-down Chart?", back: "Gráfico que mostra a quantidade de trabalho restante versus o tempo." },
+            { id: 91, topic: "Controles", front: "O que é Phishing?", back: "Ataque de engenharia social para enganar usuários e obter dados confidenciais." },
+            { id: 92, topic: "Controles", front: "O que é Ransomware?", back: "Malware que sequestra dados (criptografa) e exige resgate." },
+            { id: 93, topic: "ITIL 4", front: "O que é 'Service Value Stream'?", back: "Uma série de etapas que uma organização realiza para criar e entregar produtos/serviços aos consumidores." },
+            { id: 94, topic: "ITIL 4", front: "O que é Co-criação de valor?", back: "Colaboração ativa entre provedores e consumidores para criar valor, não apenas entrega unilateral." },
+            { id: 95, topic: "COBIT 2019", front: "O que é o domínio EDM?", back: "Evaluate, Direct and Monitor (Avaliar, Dirigir e Monitorar) - Domínio da Governança." },
+            { id: 96, topic: "PMBOK 7", front: "O que é Complexidade no PMBOK?", back: "Resultado do comportamento humano, interações de sistemas, incerteza e ambiguidade." },
+            { id: 97, topic: "NIST CSF", front: "Para que servem as 'References' no NIST?", back: "Mapear as categorias do NIST para outros padrões (como ISO 27001, COBIT, ISA)." },
+            { id: 98, topic: "Auditoria", front: "O que é Trilha de Auditoria (Audit Trail)?", back: "Registros cronológicos que permitem reconstruir e revisar a sequência de atividades." },
+            { id: 99, topic: "Governança", front: "O que é o Princípio da Conformidade?", back: "Garantir que a organização siga leis, regulamentos e normas internas/externas." },
+            { id: 100, topic: "Geral", front: "Qual o cargo alvo deste estudo?", back: "Analista em Gestão de Tecnologia da Informação e Comunicação." }
+        ];
+
+        const questionsData = [
+            // --- GOVERNANÇA & GESTÃO ---
+            { id: 1, topic: "Governança de TI", text: "Na distinção entre Governança e Gestão de TI, conforme o COBIT 2019, qual das seguintes atividades é responsabilidade primária da Governança?", options: ["A. Planejar a capacidade dos servidores.", "B. Construir soluções de software.", "C. Avaliar e direcionar a estratégia de TI.", "D. Monitorar incidentes diários.", "E. Executar testes de backup."], correctAnswer: 2, explanation: "A Governança (domínio EDM) foca em Avaliar, Dirigir e Monitorar a estratégia. As outras opções são atividades de Gestão (PBRM)." },
+            { id: 2, topic: "Governança de TI", text: "Qual é o objetivo principal do Alinhamento Estratégico na Governança de TI?", options: ["A. Reduzir o custo de todos os equipamentos de TI.", "B. Garantir que a TI suporte e potencialize os objetivos de negócio da organização.", "C. Implementar a tecnologia mais recente disponível no mercado.", "D. Garantir que todos os funcionários saibam programar.", "E. Eliminar a terceirização de serviços."], correctAnswer: 1, explanation: "O alinhamento estratégico visa assegurar que as decisões e investimentos de TI estejam em harmonia com a missão e metas do negócio." },
+            { id: 3, topic: "Governança de TI", text: "Quais são os cinco domínios de foco da Governança de TI segundo o ITGI/ISACA?", options: ["A. Planejar, Fazer, Checar, Agir, Melhorar.", "B. Identificar, Proteger, Detectar, Responder, Recuperar.", "C. Alinhamento Estratégico, Entrega de Valor, Gestão de Riscos, Gestão de Recursos, Mensuração de Desempenho.", "D. Pessoas, Processos, Produtos, Parceiros, Performance.", "E. Escopo, Tempo, Custo, Qualidade, Risco."], correctAnswer: 2, explanation: "Os 5 pilares clássicos são: Alinhamento, Valor, Riscos, Recursos e Desempenho." },
+            { id: 4, topic: "Governança de TI", text: "Quem é o principal responsável pela Governança de TI em uma organização?", options: ["A. O Gerente de Suporte.", "B. O Desenvolvedor Sênior.", "C. O Conselho de Administração ou Alta Direção.", "D. Os usuários finais.", "E. Os fornecedores de software."], correctAnswer: 2, explanation: "A governança é uma responsabilidade da Alta Administração (Board/Conselho), enquanto a gestão é responsabilidade da diretoria executiva." },
+            { id: 5, topic: "Governança de TI", text: "O que significa 'Entrega de Valor' no contexto de Governança de TI?", options: ["A. Entregar o máximo de hardware possível.", "B. Garantir que a TI entregue os benefícios prometidos otimizando custos e recursos.", "C. Entregar projetos sempre antes do prazo, independente da qualidade.", "D. Aumentar o orçamento de TI anualmente.", "E. Focar exclusivamente na redução de custos, ignorando benefícios."], correctAnswer: 1, explanation: "Entrega de valor trata de executar a proposta de valor, assegurando que a TI entregue os benefícios prometidos contra a estratégia." },
+            // --- ITIL 4 ---
+            { id: 6, topic: "ITIL 4", text: "Qual componente do SVS da ITIL 4 representa o modelo operacional central para a criação, entrega e melhoria contínua dos serviços?", options: ["A. Princípios Orientadores.", "B. Governança.", "C. Cadeia de Valor de Serviço (SVC).", "D. Práticas.", "E. Melhoria Contínua."], correctAnswer: 2, explanation: "A Cadeia de Valor de Serviço (SVC) é o modelo operacional central que descreve as atividades chave para criar produtos e serviços." },
+            { id: 7, topic: "ITIL 4", text: "Qual prática da ITIL 4 tem como foco minimizar o impacto negativo de interrupções não planejadas ou redução na qualidade de um serviço?", options: ["A. Gerenciamento de Problema.", "B. Gerenciamento de Mudança.", "C. Gerenciamento de Nível de Serviço.", "D. Gerenciamento de Incidente.", "E. Gerenciamento de Liberação."], correctAnswer: 3, explanation: "Gerenciamento de Incidente foca em restaurar a operação normal o mais rápido possível." },
+            { id: 8, topic: "ITIL 4", text: "Qual princípio orientador da ITIL recomenda 'Otimize e Automatize'?", options: ["A. Eliminar qualquer desperdício e usar tecnologia para tarefas repetitivas.", "B. Começar do zero em todos os processos.", "C. Focar apenas nas ferramentas de automação.", "D. Manter processos manuais para maior controle.", "E. Automatizar antes de otimizar o processo."], correctAnswer: 0, explanation: "Otimize e Automatize sugere simplificar e otimizar fluxos de trabalho manuais antes de aplicar automação para liberar recursos humanos." },
+            { id: 9, topic: "ITIL 4", text: "A 'Habilitação de Mudança' na ITIL 4 visa maximizar o número de mudanças bem-sucedidas. Qual o tipo de mudança que é pré-autorizada e de baixo risco?", options: ["A. Mudança Normal.", "B. Mudança Emergencial.", "C. Mudança Padrão.", "D. Mudança Crítica.", "E. Mudança Estratégica."], correctAnswer: 2, explanation: "Mudanças Padrão são de baixo risco, pré-autorizadas e bem documentadas (ex: atualização de patch rotineiro)." },
+            { id: 10, topic: "ITIL 4", text: "Qual é a definição de 'Problema' no ITIL 4?", options: ["A. Qualquer interrupção de serviço.", "B. Uma mudança que falhou.", "C. A causa raiz de um ou mais incidentes.", "D. Uma reclamação de usuário.", "E. Um evento de segurança."], correctAnswer: 2, explanation: "Um Problema é a causa raiz (conhecida ou potencial) de um ou mais incidentes." },
+            { id: 11, topic: "ITIL 4", text: "Qual das opções abaixo NÃO é uma das 4 dimensões do Gerenciamento de Serviço?", options: ["A. Organizações e Pessoas.", "B. Informação e Tecnologia.", "C. Parceiros e Fornecedores.", "D. Riscos e Compliance.", "E. Fluxos de Valor e Processos."], correctAnswer: 3, explanation: "Riscos e Compliance são fatores externos ou considerações, mas não uma das 4 dimensões centrais definidas no modelo." },
+            { id: 12, topic: "ITIL 4", text: "O que é o 'Service Desk' (Central de Serviço)?", options: ["A. O local onde os servidores ficam armazenados.", "B. O ponto único de contato entre o provedor de serviço e os usuários.", "C. Uma ferramenta de monitoramento de rede.", "D. A equipe que desenvolve software.", "E. O conselho que aprova mudanças."], correctAnswer: 1, explanation: "A Central de Serviço atua como o ponto único de contato (SPOC) para incidentes e requisições." },
+            { id: 13, topic: "ITIL 4", text: "Qual atividade da Cadeia de Valor de Serviço (SVC) garante que os produtos atendam às expectativas de qualidade, custo e tempo?", options: ["A. Planejar.", "B. Engajar.", "C. Desenho e Transição.", "D. Obter/Construir.", "E. Entregar e Suportar."], correctAnswer: 2, explanation: "Desenho e Transição foca em garantir que os produtos e serviços atendam às expectativas de stakeholders em qualidade, custo e tempo." },
+            { id: 14, topic: "ITIL 4", text: "O que é um SLA?", options: ["A. Service Level Agreement - Acordo de Nível de Serviço.", "B. System Level Access - Acesso em Nível de Sistema.", "C. Service Liability Act - Ato de Responsabilidade de Serviço.", "D. Standard License Agreement - Acordo Padrão de Licença.", "E. Secure Login Authentication - Autenticação de Login Seguro."], correctAnswer: 0, explanation: "SLA é um acordo documentado entre provedor e cliente que identifica serviços e metas de nível de serviço." },
+            { id: 15, topic: "ITIL 4", text: "Qual princípio orientador sugere 'Focar no Valor'?", options: ["A. Tudo que a organização faz deve mapear, direta ou indiretamente, para valor aos stakeholders.", "B. Automatizar tudo que for possível.", "C. Trabalhar em silos para maior especialização.", "D. Seguir o processo rigidamente sem questionar.", "E. Começar tudo do zero a cada projeto."], correctAnswer: 0, explanation: "O princípio 'Foco no Valor' dita que todas as atividades devem gerar valor para o consumidor ou stakeholders." },
+            // --- COBIT 2019 ---
+            { id: 16, topic: "COBIT 2019", text: "Qual domínio de gestão do COBIT 2019 lida com a aquisição e implementação de soluções (projetos)?", options: ["A. EDM.", "B. APO.", "C. BAI.", "D. DSS.", "E. MEA."], correctAnswer: 2, explanation: "BAI (Build, Acquire, Implement) foca na definição, aquisição e implementação de soluções e sua integração." },
+            { id: 17, topic: "COBIT 2019", text: "O que representa a 'Cascata de Metas' no COBIT 2019?", options: ["A. Um modelo de desenvolvimento de software.", "B. A tradução das necessidades dos stakeholders em objetivos de governança e gestão.", "C. Uma lista de riscos operacionais.", "D. A hierarquia de cargos na TI.", "E. O fluxo de dados entre sistemas."], correctAnswer: 1, explanation: "A Cascata de Metas traduz necessidades das partes interessadas em metas corporativas, de alinhamento e objetivos de governança." },
+            { id: 18, topic: "COBIT 2019", text: "Qual domínio do COBIT lida com 'Monitorar, Avaliar e Analisar' o desempenho e a conformidade?", options: ["A. APO.", "B. BAI.", "C. DSS.", "D. MEA.", "E. EDM."], correctAnswer: 3, explanation: "MEA (Monitor, Evaluate and Assess) foca na medição de desempenho, conformidade e controles internos." },
+            { id: 19, topic: "COBIT 2019", text: "Quantos objetivos de governança e gestão existem no Core Model do COBIT 2019?", options: ["A. 5.", "B. 13.", "C. 34.", "D. 37.", "E. 40."], correctAnswer: 4, explanation: "O COBIT 2019 define 40 objetivos de governança e gestão organizados em 5 domínios." },
+            { id: 20, topic: "COBIT 2019", text: "O que são 'Fatores de Design' no COBIT 2019?", options: ["A. Ferramentas de design gráfico.", "B. Fatores que influenciam o desenho do sistema de governança da empresa.", "C. Padrões de codificação de software.", "D. Métricas de desempenho de servidores.", "E. Tipos de hardware utilizados."], correctAnswer: 1, explanation: "Fatores de Design (ex: estratégia, porte, perfil de risco) ajudam a personalizar o sistema de governança." },
+            { id: 21, topic: "COBIT 2019", text: "Qual das seguintes opções é um Princípio do Sistema de Governança do COBIT 2019?", options: ["A. Sistema de Governança Estático.", "B. Governança igual à Gestão.", "C. Foco apenas na TI interna.", "D. Abordagem Holística.", "E. Ignorar as partes interessadas."], correctAnswer: 3, explanation: "Abordagem Holística é um princípio chave, considerando processos, estruturas, cultura, informações, etc." },
+            { id: 22, topic: "COBIT 2019", text: "O domínio APO significa:", options: ["A. Avaliar, Planejar, Organizar.", "B. Alinhar, Planejar, Organizar.", "C. Analisar, Processar, Otimizar.", "D. Aplicar, Programar, Operar.", "E. Auditar, Prevenir, Observar."], correctAnswer: 1, explanation: "APO = Align, Plan and Organize. Foca na estratégia, portfólio, orçamento e relações." },
+            { id: 23, topic: "COBIT 2019", text: "Qual processo pertence ao domínio EDM (Governança)?", options: ["A. Gerenciar Incidentes.", "B. Gerenciar Projetos.", "C. Assegurar a Otimização de Riscos.", "D. Gerenciar Segurança.", "E. Gerenciar Configuração."], correctAnswer: 2, explanation: "EDM03 é Assegurar a Otimização de Riscos. Os outros são processos de gestão (DSS, BAI, APO)." },
+            { id: 24, topic: "COBIT 2019", text: "O COBIT 2019 faz uma distinção clara entre Governança e Gestão. A quem cabe primariamente a Gestão?", options: ["A. Ao Conselho de Administração.", "B. Aos Auditores Externos.", "C. À Diretoria Executiva e Gerência (C-Level e abaixo).", "D. Aos Acionistas.", "E. Ao Governo."], correctAnswer: 2, explanation: "A Gestão (PBRM) é responsabilidade da diretoria executiva e gerência, sob a direção da governança." },
+            { id: 25, topic: "COBIT 2019", text: "O que é um 'Sistema de Governança Dinâmico'?", options: ["A. Um sistema que nunca muda.", "B. Um sistema que muda aleatoriamente.", "C. Um sistema que se adapta a mudanças na estratégia e tecnologia.", "D. Um software de monitoramento em tempo real.", "E. Um sistema sem regras definidas."], correctAnswer: 2, explanation: "Um dos princípios é ser dinâmico: capaz de evoluir conforme os Fatores de Design mudam." },
+            // --- PMBOK 7 ---
+            { id: 26, topic: "PMBOK 7", text: "No PMBOK 7ª Edição, qual domínio de desempenho trata das atividades relacionadas à volatilidade, complexidade, risco e ambiguidade?", options: ["A. Domínio da Equipe.", "B. Domínio do Planejamento.", "C. Domínio da Incerteza.", "D. Domínio da Entrega.", "E. Domínio da Medição."], correctAnswer: 2, explanation: "O Domínio de Desempenho da Incerteza aborda riscos, ambiguidade e complexidade." },
+            { id: 27, topic: "PMBOK 7", text: "Qual princípio do PMBOK 7 orienta a adaptação da abordagem de desenvolvimento com base no contexto do projeto?", options: ["A. Stewardship.", "B. Tailoring (Adaptação).", "C. Qualidade.", "D. Valor.", "E. Complexidade."], correctAnswer: 1, explanation: "Tailoring é o princípio de adaptar a abordagem, a governança e os processos para torná-los mais adequados ao ambiente do projeto." },
+            { id: 28, topic: "PMBOK 7", text: "Qual domínio de desempenho foca em estabelecer a cultura e o ambiente para que um grupo de indivíduos evolua para uma equipe de alta performance?", options: ["A. Domínio das Partes Interessadas.", "B. Domínio da Equipe.", "C. Domínio do Planejamento.", "D. Domínio da Entrega.", "E. Domínio da Medição."], correctAnswer: 1, explanation: "O Domínio da Equipe trata das atividades e funções associadas às pessoas que são responsáveis por produzir as entregas do projeto." },
+            { id: 29, topic: "PMBOK 7", text: "O que caracteriza a 'Stewardship' (Administração) como princípio?", options: ["A. Focar apenas no lucro.", "B. Ser um administrador diligente, respeitoso e atencioso.", "C. Seguir cegamente o plano.", "D. Evitar qualquer risco.", "E. Controlar as pessoas."], correctAnswer: 1, explanation: "Stewardship envolve atuar com integridade, cuidado, confiabilidade e conformidade." },
+            { id: 30, topic: "PMBOK 7", text: "Qual é a mudança principal da 6ª para a 7ª edição do PMBOK?", options: ["A. Foco exclusivo em Ágil.", "B. Mudança de 'Processos' para 'Princípios e Domínios de Desempenho'.", "C. Remoção da gestão de riscos.", "D. Foco apenas em projetos de construção.", "E. Adoção obrigatória do Scrum."], correctAnswer: 1, explanation: "A 7ª edição mudou de uma abordagem baseada em processos (ITTOs) para uma baseada em princípios e domínios de desempenho." },
+            { id: 31, topic: "PMBOK 7", text: "O que são 'Domínios de Desempenho'?", options: ["A. Departamentos da empresa.", "B. Áreas de foco para demonstrar o comportamento do projeto.", "C. Softwares de gestão.", "D. Fases do ciclo de vida.", "E. Cargos da equipe."], correctAnswer: 1, explanation: "São grupos de atividades relacionadas que são críticas para a entrega eficaz dos resultados do projeto." },
+            { id: 32, topic: "PMBOK 7", text: "Qual abordagem de desenvolvimento é caracterizada por definir escopo, prazo e custo no início?", options: ["A. Adaptativa.", "B. Ágil.", "C. Preditiva (Cascata).", "D. Híbrida.", "E. Iterativa."], correctAnswer: 2, explanation: "A abordagem Preditiva tenta planejar tudo antecipadamente." },
+            { id: 33, topic: "PMBOK 7", text: "Qual princípio diz respeito a ver o projeto como parte de algo maior?", options: ["A. Valor.", "B. Pensamento Sistêmico.", "C. Qualidade.", "D. Risco.", "E. Mudança."], correctAnswer: 1, explanation: "Pensamento Sistêmico envolve reconhecer, avaliar e responder às interações do sistema." },
+            { id: 34, topic: "PMBOK 7", text: "O que o domínio 'Entrega' foca?", options: ["A. Apenas em enviar e-mails.", "B. No transporte físico de produtos.", "C. Em atender aos requisitos, escopo e expectativas de qualidade para produzir o entregável.", "D. Em contratar fornecedores.", "E. Em calcular o ROI."], correctAnswer: 2, explanation: "Foca na entrega do valor e dos produtos/serviços acordados." },
+            { id: 35, topic: "PMBOK 7", text: "Qual a relação entre Projetos e Valor no PMBOK 7?", options: ["A. Projetos consomem valor.", "B. Projetos são irrelevantes para o valor.", "C. Projetos existem para criar valor para a organização e stakeholders.", "D. Valor é apenas financeiro.", "E. Valor é definido apenas no fim do projeto."], correctAnswer: 2, explanation: "O princípio 'Foco no Valor' destaca que o sucesso é medido pela entrega de valor, não apenas entregáveis." },
+            // --- NIST CSF ---
+            { id: 36, topic: "NIST CSF 2.0", text: "O Framework NIST CSF 2.0 adicionou uma nova função ao seu núcleo para enfatizar a estratégia de risco. Qual é essa função?", options: ["A. IDENTIFY.", "B. PROTECT.", "C. GOVERN.", "D. RECOVER.", "E. DETECT."], correctAnswer: 2, explanation: "A função GOVERN (Governar) foi adicionada na versão 2.0 para estabelecer e monitorar a estratégia de gestão de riscos." },
+            { id: 37, topic: "NIST CSF 2.0", text: "Em qual função do NIST CSF são desenvolvidas e implementadas as salvaguardas para garantir a entrega de serviços críticos?", options: ["A. IDENTIFY.", "B. DETECT.", "C. RESPOND.", "D. RECOVER.", "E. PROTECT."], correctAnswer: 4, explanation: "A função PROTECT visa implementar salvaguardas para limitar ou conter o impacto de um evento de segurança." },
+            { id: 38, topic: "NIST CSF 2.0", text: "Qual função do NIST CSF lida com a restauração de capacidades ou serviços prejudicados por um incidente?", options: ["A. GOVERN.", "B. DETECT.", "C. RESPOND.", "D. RECOVER.", "E. IDENTIFY."], correctAnswer: 3, explanation: "RECOVER foca na resiliência e restauração de serviços após um incidente." },
+            { id: 39, topic: "NIST CSF 2.0", text: "Qual função do NIST envolve a gestão de ativos e avaliação de riscos?", options: ["A. IDENTIFY.", "B. PROTECT.", "C. DETECT.", "D. RESPOND.", "E. RECOVER."], correctAnswer: 0, explanation: "IDENTIFY ajuda a compreender o contexto de negócio, os ativos que precisam de proteção e os riscos associados." },
+            { id: 40, topic: "NIST CSF 2.0", text: "A monitoração contínua de segurança para identificar eventos de cibersegurança pertence a qual função?", options: ["A. GOVERN.", "B. PROTECT.", "C. DETECT.", "D. RESPOND.", "E. RECOVER."], correctAnswer: 2, explanation: "DETECT foca na descoberta oportuna de eventos de segurança cibernética." },
+            { id: 41, topic: "NIST CSF 2.0", text: "O que são 'Tiers' (Camadas) no NIST CSF?", options: ["A. Níveis de acesso de usuário.", "B. Camadas de firewall.", "C. Níveis que descrevem o rigor das práticas de risco de cibersegurança.", "D. Tipos de ataques.", "E. Níveis de backup."], correctAnswer: 2, explanation: "Tiers descrevem o grau em que as práticas de risco de cibersegurança de uma organização exibem as características definidas no Framework." },
+            { id: 42, topic: "NIST CSF 2.0", text: "O que é um 'Profile' (Perfil) no NIST CSF?", options: ["A. A senha do usuário.", "B. O alinhamento das Funções/Categorias com os requisitos de negócio, tolerância a risco e recursos da organização.", "C. Um log de auditoria.", "D. Uma lista de vírus conhecidos.", "E. O perfil do atacante."], correctAnswer: 1, explanation: "Profiles são usados para descrever o estado atual e o estado alvo de cibersegurança de uma organização." },
+            { id: 43, topic: "NIST CSF 2.0", text: "Qual é a principal diferença de escopo do NIST CSF 2.0 em relação ao 1.1?", options: ["A. Foca apenas em bancos.", "B. Foca apenas em governo.", "C. É projetado para todas as organizações, não apenas infraestrutura crítica.", "D. Removeu a função de recuperação.", "E. Tornou-se pago."], correctAnswer: 2, explanation: "O NIST CSF 2.0 expandiu seu escopo explicitamente para todas as organizações, independentemente do setor ou tamanho." },
+            { id: 44, topic: "NIST CSF 2.0", text: "Em qual função se enquadra a 'Gestão de Identidade e Controle de Acesso'?", options: ["A. IDENTIFY.", "B. PROTECT.", "C. DETECT.", "D. RESPOND.", "E. RECOVER."], correctAnswer: 1, explanation: "Controle de acesso é uma salvaguarda chave da função PROTECT." },
+            { id: 45, topic: "NIST CSF 2.0", text: "Em qual função se enquadra a 'Análise de Incidentes'?", options: ["A. IDENTIFY.", "B. PROTECT.", "C. DETECT.", "D. RESPOND.", "E. RECOVER."], correctAnswer: 3, explanation: "Analisar um incidente para entender seu impacto e como contê-lo é parte da função RESPOND." },
+            // --- CONTROLES INTERNOS & AUDITORIA ---
+            { id: 46, topic: "Controles Internos", text: "A Segregação de Funções (SoD) é um controle preventivo crítico. Qual dos cenários abaixo representa uma violação de SoD?", options: ["A. O desenvolvedor escreve o código e o testador valida.", "B. O desenvolvedor promove o próprio código para o ambiente de produção.", "C. O administrador de banco de dados cria o backup e o operador restaura.", "D. O gerente aprova a compra e o financeiro executa o pagamento.", "E. O usuário solicita acesso e o gestor aprova."], correctAnswer: 1, explanation: "Desenvolvedores não devem ter acesso de escrita no ambiente de produção para evitar fraudes ou alterações não autorizadas." },
+            { id: 47, topic: "Controles Internos", text: "Qual é o objetivo principal de uma Auditoria de TI?", options: ["A. Desenvolver software.", "B. Configurar firewalls.", "C. Avaliar se os sistemas salvaguardam ativos, mantêm a integridade dos dados e operam eficazmente.", "D. Gerenciar o suporte ao usuário.", "E. Criar o plano estratégico de TI."], correctAnswer: 2, explanation: "A auditoria avalia evidências para determinar a eficácia dos controles e a segurança dos ativos." },
+            { id: 48, topic: "Controles Internos", text: "O que são ITGCs (Controles Gerais de TI)?", options: ["A. Controles específicos de uma única aplicação.", "B. Controles que se aplicam a todos os sistemas, processos e dados da organização.", "C. Controles financeiros.", "D. Controles de estoque físico.", "E. Controles de acesso físico apenas."], correctAnswer: 1, explanation: "ITGCs são controles transversais, como gestão de mudanças, segurança lógica e operações de data center." },
+            { id: 49, topic: "Controles Internos", text: "Qual a diferença entre Auditoria Interna e Externa?", options: ["A. Interna foca em fraude, externa em eficiência.", "B. Interna é feita por funcionários e foca na melhoria; Externa é independente e foca em conformidade/demonstrações.", "C. Não há diferença.", "D. Externa é mais barata.", "E. Interna é opcional para bancos."], correctAnswer: 1, explanation: "Auditoria interna é uma função de avaliação independente dentro da organização. Externa é realizada por terceiros para asseguração pública." },
+            { id: 50, topic: "Controles Internos", text: "O que é um 'Controle Preventivo'?", options: ["A. Um controle que detecta erros após ocorrerem.", "B. Um controle que corrige erros.", "C. Um controle que evita que erros ou fraudes ocorram.", "D. Um backup.", "E. Um log de auditoria."], correctAnswer: 2, explanation: "Controles preventivos (ex: senhas, bloqueios) atuam antes do evento indesejado." },
+            { id: 51, topic: "Controles Internos", text: "O que é um 'Controle Detectivo'?", options: ["A. Um firewall.", "B. Uma cerca elétrica.", "C. Um controle que identifica erros ou fraudes que já ocorreram.", "D. Um plano de recuperação de desastres.", "E. Uma política de segurança."], correctAnswer: 2, explanation: "Exemplos de controles detectivos: revisão de logs, reconciliação bancária, auditorias." },
+            { id: 52, topic: "Controles Internos", text: "O que é a LGPD?", options: ["A. Lei de Gestão de Projetos Digitais.", "B. Lei Geral de Proteção de Dados Pessoais.", "C. Lei Governamental de Processos de Dados.", "D. Lei Geral de Pagamentos Digitais.", "E. Licença Geral para Programadores de Dados."], correctAnswer: 1, explanation: "A Lei nº 13.709/2018 regula o tratamento de dados pessoais no Brasil." },
+            { id: 53, topic: "Controles Internos", text: "Na LGPD, quem é o 'Controlador'?", options: ["A. Quem realiza o tratamento de dados em nome de outro.", "B. A pessoa natural a quem os dados se referem.", "C. A pessoa natural ou jurídica a quem competem as decisões referentes ao tratamento de dados pessoais.", "D. A autoridade nacional (ANPD).", "E. O encarregado de dados (DPO)."], correctAnswer: 2, explanation: "Controlador é quem decide 'o que' e 'como' fazer com os dados." },
+            { id: 54, topic: "Controles Internos", text: "O que é uma 'Trilha de Auditoria' (Audit Trail)?", options: ["A. Um caminho físico no data center.", "B. Um conjunto de registros cronológicos que permite reconstruir e revisar a sequência de atividades.", "C. O plano de carreira do auditor.", "D. Um software antivírus.", "E. Uma política de backup."], correctAnswer: 1, explanation: "Logs e registros que permitem rastrear quem fez o quê e quando." },
+            { id: 55, topic: "Controles Internos", text: "Qual é o risco de não ter Segregação de Funções (SoD)?", options: ["A. O sistema fica mais lento.", "B. Aumenta o risco de fraude e erros não detectados.", "C. Diminui o custo de pessoal.", "D. Melhora a eficiência.", "E. Não há risco."], correctAnswer: 1, explanation: "SoD é essencial para prevenir que uma única pessoa possa cometer e ocultar erros ou fraudes." },
+            // --- QUESTÕES MISTAS/AVANÇADAS ---
+            { id: 56, topic: "ITIL 4", text: "O que é 'Shift Left' no contexto de TI?", options: ["A. Mover o mouse para a esquerda.", "B. Mover atividades (como testes e suporte) para mais cedo no ciclo de vida.", "C. Ignorar problemas antigos.", "D. Mudar a liderança da equipe.", "E. Focar apenas no fim do projeto."], correctAnswer: 1, explanation: "Shift Left visa encontrar defeitos ou resolver problemas o mais cedo possível (à esquerda na linha do tempo), reduzindo custos e impacto." },
+            { id: 57, topic: "COBIT 2019", text: "Qual a diferença entre os domínios BAI e APO no COBIT?", options: ["A. APO constrói, BAI planeja.", "B. APO planeja e organiza; BAI constrói, adquire e implementa.", "C. APO é governança, BAI é gestão.", "D. Não há diferença.", "E. BAI é monitoramento, APO é execução."], correctAnswer: 1, explanation: "APO foca na estratégia e organização. BAI foca na execução de projetos e implementação de mudanças." },
+            { id: 58, topic: "PMBOK 7", text: "O que é um 'Backlog'?", options: ["A. Um registro de riscos.", "B. Uma lista ordenada de trabalho a ser feito.", "C. Um relatório de status.", "D. Um log de erros.", "E. Um contrato."], correctAnswer: 1, explanation: "Backlog é uma lista emergente e ordenada do que é necessário para melhorar o produto." },
+            { id: 59, topic: "NIST CSF 2.0", text: "A função 'GOVERN' do NIST se relaciona com qual domínio do COBIT?", options: ["A. APO.", "B. BAI.", "C. DSS.", "D. MEA.", "E. EDM."], correctAnswer: 4, explanation: "Ambos tratam da governança, estratégia e direção (EDM no COBIT, GOVERN no NIST)." },
+            { id: 60, topic: "Governança de TI", text: "O que é 'Shadow IT'?", options: ["A. Uma área escura no data center.", "B. O uso de sistemas e soluções de TI sem o conhecimento ou aprovação da TI oficial.", "C. Um tipo de ataque hacker.", "D. O backup noturno.", "E. A equipe de suporte noturno."], correctAnswer: 1, explanation: "Shadow IT representa riscos de segurança e conformidade pois foge do controle da governança." },
+            { id: 61, topic: "ITIL 4", text: "Qual prática lida com a 'Causa Raiz'?", options: ["A. Incidente.", "B. Mudança.", "C. Problema.", "D. Configuração.", "E. Nível de Serviço."], correctAnswer: 2, explanation: "Gerenciamento de Problemas foca na causa raiz." },
+            { id: 62, topic: "ITIL 4", text: "O que é um 'Workaround' (Solução de Contorno)?", options: ["A. A solução definitiva.", "B. Uma forma de reduzir a probabilidade de um incidente.", "C. Uma solução temporária para restaurar o serviço quando a solução definitiva não está disponível.", "D. Um tipo de backup.", "E. Uma política de segurança."], correctAnswer: 2, explanation: "Workarounds são vitais no Gerenciamento de Incidentes para restaurar serviço rápido." },
+            { id: 63, topic: "COBIT 2019", text: "O que é um Objetivo de Controle?", options: ["A. Uma meta financeira.", "B. Uma declaração do resultado desejado ou propósito a ser alcançado pela implementação de procedimentos de controle.", "C. Um software de monitoramento.", "D. Uma lei federal.", "E. Um cargo na empresa."], correctAnswer: 1, explanation: "Objetivos de controle definem o que o controle deve alcançar." },
+            { id: 64, topic: "PMBOK 7", text: "O que é 'Pensamento Sistêmico'?", options: ["A. Pensar apenas no software.", "B. Reconhecer, avaliar e responder às interações dinâmicas dentro e entre sistemas.", "C. Ignorar o ambiente externo.", "D. Focar em uma tarefa por vez.", "E. Usar fluxogramas."], correctAnswer: 1, explanation: "É um princípio chave para entender como as partes do projeto interagem com o todo." },
+            { id: 65, topic: "Controles Internos", text: "Qual a função do 'DPO' na LGPD?", options: ["A. Desenvolver o software.", "B. Atuar como canal de comunicação entre o controlador, os titulares dos dados e a Autoridade Nacional (ANPD).", "C. Vender os dados.", "D. Auditar as finanças.", "E. Gerenciar o data center."], correctAnswer: 1, explanation: "O Encarregado (DPO) é o ponto focal da proteção de dados na organização." },
+            { id: 66, topic: "Governança de TI", text: "O que é BSC (Balanced Scorecard)?", options: ["A. Um balanço contábil.", "B. Uma ferramenta de gestão estratégica que mede desempenho sob 4 perspectivas (Financeira, Cliente, Processos, Aprendizado).", "C. Um software de antivírus.", "D. Um método de gestão de projetos ágil.", "E. Uma norma de cabeamento."], correctAnswer: 1, explanation: "O BSC é amplamente usado na governança para alinhar atividades de negócio à visão e estratégia." },
+            { id: 67, topic: "ITIL 4", text: "O que é Melhoria Contínua?", options: ["A. Um projeto único.", "B. Uma atividade recorrente realizada em todos os níveis para garantir que o desempenho atenda às expectativas.", "C. Corrigir erros apenas quando acontecem.", "D. Comprar novos servidores.", "E. Trocar de equipe a cada ano."], correctAnswer: 1, explanation: "A Melhoria Contínua é um componente central do SVS da ITIL." },
+            { id: 68, topic: "COBIT 2019", text: "O que é Maturidade no contexto do CMMI/COBIT?", options: ["A. A idade da empresa.", "B. O nível de capacidade e otimização dos processos da organização.", "C. O lucro anual.", "D. O número de funcionários.", "E. O tempo de mercado do software."], correctAnswer: 1, explanation: "Modelos de maturidade medem quão bem definidos, gerenciados e otimizados são os processos." },
+            { id: 69, topic: "PMBOK 7", text: "O que é MVP (Minimum Viable Product)?", options: ["A. O produto final completo.", "B. Um protótipo que não funciona.", "C. Uma versão de um produto com funcionalidades suficientes apenas para ser utilizável por clientes iniciais e fornecer feedback.", "D. O projeto mais caro.", "E. O melhor funcionário do projeto."], correctAnswer: 2, explanation: "MVP é conceito chave em abordagens ágeis para validar aprendizado com menor esforço." },
+            { id: 70, topic: "NIST CSF 2.0", text: "O que é Resiliência Cibernética?", options: ["A. Nunca ser atacado.", "B. A capacidade de antecipar, resistir, recuperar-se e adaptar-se a condições adversas ou ataques.", "C. Ter um firewall caro.", "D. Não usar computadores.", "E. Ter seguro contra hackers."], correctAnswer: 1, explanation: "Resiliência vai além da proteção; é sobre sobreviver e recuperar-se de ataques." },
+            { id: 71, topic: "ITIL 4", text: "O que é um Ativo de TI?", options: ["A. Dinheiro.", "B. Qualquer componente financeiramente valioso que pode contribuir para a entrega de um produto ou serviço de TI.", "C. Apenas servidores.", "D. Apenas software.", "E. O prédio da empresa."], correctAnswer: 1, explanation: "Ativos de TI incluem hardware, software, informações, etc." },
+            { id: 72, topic: "Governança", text: "O que é Compliance?", options: ["A. Comprar software.", "B. Estar em conformidade com leis, regulamentos e normas.", "C. Contratar pessoal.", "D. Fazer backup.", "E. Usar nuvem."], correctAnswer: 1, explanation: "Compliance é a aderência a regras externas e internas." },
+            { id: 73, topic: "Controles", text: "O que é Autenticação de Dois Fatores (2FA)?", options: ["A. Usar duas senhas iguais.", "B. Usar dois métodos diferentes de identificação (algo que você sabe + algo que você tem).", "C. Logar duas vezes.", "D. Ter dois usuários.", "E. Nenhuma das anteriores."], correctAnswer: 1, explanation: "2FA aumenta a segurança exigindo dois tipos de prova de identidade." },
+            { id: 74, topic: "PMBOK 7", text: "O que é uma Parte Interessada (Stakeholder)?", options: ["A. Apenas quem paga.", "B. Apenas o gerente.", "C. Qualquer pessoa ou grupo que pode afetar ou ser afetado pelo projeto.", "D. O governo.", "E. O concorrente."], correctAnswer: 2, explanation: "Stakeholder é qualquer um impactado pelo projeto." },
+            { id: 75, topic: "COBIT 2019", text: "Qual o foco do COBIT?", options: ["A. Apenas segurança.", "B. Apenas desenvolvimento.", "C. Governança e Gestão de Informação e Tecnologia (I&T) da empresa.", "D. Apenas hardware.", "E. Apenas suporte."], correctAnswer: 2, explanation: "O COBIT foca na I&T da empresa como um todo." },
+            { id: 76, topic: "ITIL 4", text: "O que é 'Change Authority'?", options: ["A. O dono da empresa.", "B. A pessoa ou grupo que autoriza uma mudança.", "C. O desenvolvedor.", "D. O usuário.", "E. O sistema."], correctAnswer: 1, explanation: "Autoridade de Mudança é quem tem o poder de aprovar a mudança." },
+            { id: 77, topic: "NIST CSF", text: "O que é um Ativo Crítico?", options: ["A. O computador do estagiário.", "B. Um ativo cuja falha impactaria significativamente a operação da organização.", "C. Qualquer impressora.", "D. O mouse.", "E. O monitor."], correctAnswer: 1, explanation: "Ativos críticos são essenciais para a missão da organização." },
+            { id: 78, topic: "Controles", text: "O que é Engenharia Social?", options: ["A. Construir pontes.", "B. Manipular pessoas para que divulguem informações confidenciais.", "C. Uma rede social.", "D. Um curso de engenharia.", "E. Um software."], correctAnswer: 1, explanation: "Engenharia social explora a falha humana, não técnica." },
+            { id: 79, topic: "PMBOK 7", text: "O que é Sprint?", options: ["A. Uma corrida.", "B. Um período de tempo fixo (time-box) para criar um incremento de produto.", "C. Um software.", "D. Uma reunião.", "E. Um erro."], correctAnswer: 1, explanation: "Sprint é o coração do Scrum e métodos ágeis." },
+            { id: 80, topic: "ITIL 4", text: "Qual a diferença entre Cliente e Usuário?", options: ["A. Nenhuma.", "B. Cliente define requisitos e paga; Usuário utiliza o serviço no dia a dia.", "C. Usuário paga; Cliente usa.", "D. Cliente é externo; Usuário é interno.", "E. Cliente é o chefe."], correctAnswer: 1, explanation: "O Cliente foca nos requisitos e valor; o Usuário foca na utilização." },
+            { id: 81, topic: "Governança", text: "O que é ROI?", options: ["A. Return on Investment (Retorno sobre Investimento).", "B. Risk of Internet.", "C. Rule of Infrastructure.", "D. Rate of Interest.", "E. Nenhuma."], correctAnswer: 0, explanation: "Métrica financeira chave para avaliar valor." },
+            { id: 82, topic: "Controles", text: "O que é Criptografia?", options: ["A. Uma moeda digital.", "B. Técnica de codificar dados para que apenas autorizados possam ler.", "C. Um vírus.", "D. Um tipo de gráfico.", "E. Um backup."], correctAnswer: 1, explanation: "Protege a confidencialidade dos dados." },
+            { id: 83, topic: "ITIL 4", text: "O que é Disponibilidade?", options: ["A. Estar no escritório.", "B. A capacidade de um serviço desempenhar sua função acordada quando necessário.", "C. Ter backup.", "D. Ter internet rápida.", "E. Ter antivírus."], correctAnswer: 1, explanation: "Disponibilidade é uma métrica chave de garantia de serviço." },
+            { id: 84, topic: "COBIT 2019", text: "O que é um 'Enabler' (Habilitador) no COBIT?", options: ["A. Algo que impede o progresso.", "B. Fatores que, individualmente e em conjunto, influenciam se algo vai funcionar (ex: processos, cultura, info).", "C. Um botão.", "D. Um gerente.", "E. Um risco."], correctAnswer: 1, explanation: "Habilitadores são os componentes do sistema de governança." },
+            { id: 85, topic: "PMBOK 7", text: "O que é Escopo?", options: ["A. O tempo do projeto.", "B. O custo do projeto.", "C. O trabalho necessário para entregar um produto, serviço ou resultado.", "D. A equipe.", "E. O risco."], correctAnswer: 2, explanation: "Escopo define as fronteiras do que será feito." },
+            { id: 86, topic: "NIST CSF", text: "O que é 'Supply Chain Risk Management'?", options: ["A. Gerir o estoque.", "B. Gerir riscos associados a fornecedores e cadeia de suprimentos.", "C. Comprar computadores.", "D. Vender produtos.", "E. Contratar RH."], correctAnswer: 1, explanation: "Riscos de terceiros são críticos na cibersegurança." },
+            { id: 87, topic: "Controles", text: "O que é Backup?", options: ["A. Um arquivo deletado.", "B. Uma cópia de dados para recuperação em caso de perda.", "C. Um vírus.", "D. Um funcionário reserva.", "E. Um computador velho."], correctAnswer: 1, explanation: "Controle corretivo essencial para disponibilidade." },
+            { id: 88, topic: "ITIL 4", text: "O que é Capacidade?", options: ["A. Tamanho do escritório.", "B. Habilidade de um serviço ou componente de entregar o desempenho exigido.", "C. Número de funcionários.", "D. Dinheiro no banco.", "E. Nenhuma."], correctAnswer: 1, explanation: "Gestão de Capacidade foca em recursos vs demanda." },
+            { id: 89, topic: "Governança", text: "O que é IT Strategic Plan (PETI)?", options: ["A. Plano de férias.", "B. Plano Estratégico de TI - define como a TI contribuirá para os objetivos da empresa.", "C. Lista de compras.", "D. Calendário de festas.", "E. Manual do usuário."], correctAnswer: 1, explanation: "Documento chave de alinhamento estratégico." },
+            { id: 90, topic: "PMBOK 7", text: "O que é Lições Aprendidas?", options: ["A. Matéria da escola.", "B. Conhecimento ganho durante o projeto para melhorar execuções futuras.", "C. Erros esquecidos.", "D. Reunião chata.", "E. Documento inútil."], correctAnswer: 1, explanation: "Fundamental para melhoria contínua." },
+            { id: 91, topic: "Controles", text: "O que é RTO (Recovery Time Objective)?", options: ["A. Tempo máximo tolerável para restaurar um serviço após falha.", "B. Tempo de almoço.", "C. Tempo de viagem.", "D. Tempo de projeto.", "E. Tempo de backup."], correctAnswer: 0, explanation: "Métrica chave de continuidade de negócios." },
+            { id: 92, topic: "Controles", text: "O que é RPO (Recovery Point Objective)?", options: ["A. Ponto de encontro.", "B. Máxima perda de dados aceitável (medida em tempo) após uma falha.", "C. Ponto de venda.", "D. Ponto de ônibus.", "E. Ponto final."], correctAnswer: 1, explanation: "Define a frequência necessária de backups." },
+            { id: 93, topic: "ITIL 4", text: "O que é CAB (Change Advisory Board)?", options: ["A. Um táxi.", "B. Comitê Consultivo de Mudanças - avalia mudanças de alto risco.", "C. Um cabo.", "D. Um computador.", "E. Uma sala."], correctAnswer: 1, explanation: "Grupo que auxilia na avaliação de mudanças." },
+            { id: 94, topic: "COBIT 2019", text: "Qual a diferença entre Risco Inerente e Residual?", options: ["A. Nenhuma.", "B. Inerente é o risco natural sem controles; Residual é o que sobra após os controles.", "C. Residual é antes, Inerente é depois.", "D. Inerente é bom, Residual é ruim.", "E. Inerente é financeiro, Residual é técnico."], correctAnswer: 1, explanation: "Conceito fundamental de gestão de riscos." },
+            { id: 95, topic: "PMBOK 7", text: "O que é WBS (EAP)?", options: ["A. Work Breakdown Structure (Estrutura Analítica do Projeto) - decomposição do escopo.", "B. Web Service.", "C. Work Balance Sheet.", "D. World Bank.", "E. Wireless Base Station."], correctAnswer: 0, explanation: "Ferramenta visual para definir escopo." },
+            { id: 96, topic: "NIST CSF", text: "O que é um 'Evento' de segurança?", options: ["A. Uma festa.", "B. Uma ocorrência observável em um sistema ou rede.", "C. Um erro de digitação.", "D. Uma compra.", "E. Uma venda."], correctAnswer: 1, explanation: "Nem todo evento é um incidente, mas todo incidente começa com um evento." },
+            { id: 97, topic: "Governança", text: "O que é TCO?", options: ["A. Total Cost of Ownership (Custo Total de Propriedade).", "B. Time Control Officer.", "C. Technical Chief.", "D. Total Count.", "E. Nenhuma."], correctAnswer: 0, explanation: "Métrica financeira que inclui aquisição + operação." },
+            { id: 98, topic: "ITIL 4", text: "O que é 'Service Catalogue'?", options: ["A. Lista de preços.", "B. Lista de todos os serviços disponíveis para os clientes.", "C. Lista de funcionários.", "D. Lista de servidores.", "E. Lista de senhas."], correctAnswer: 1, explanation: "Visão do cliente sobre o que a TI oferece." },
+            { id: 99, topic: "Controles", text: "O que é Vulnerabilidade?", options: ["A. Um vírus.", "B. Uma fraqueza que pode ser explorada por uma ameaça.", "C. Um hacker.", "D. Um firewall.", "E. Um antivírus."], correctAnswer: 1, explanation: "Risco = Ameaça x Vulnerabilidade." },
+            { id: 100, topic: "Controles", text: "O que é Ameaça?", options: ["A. Uma fraqueza.", "B. Uma causa potencial de um incidente indesejado.", "C. Um erro.", "D. Um usuário.", "E. Um computador."], correctAnswer: 1, explanation: "Algo que pode causar dano." }
+        ];
+
+        const tipsData = [
+            { id: 1, title: "Governança vs. Gestão", description: "Memorize: Governança (EDM) DIRECIONA e MONITORA (Nível Estratégico). Gestão (PBRM) EXECUTA (Nível Tático/Operacional). O COBIT é o principal framework que faz essa distinção clara.", tag: "Conceito Chave" },
+            { id: 2, title: "SoD é vital", description: "Em questões sobre controles, Segregação de Funções (SoD) é a resposta para prevenir fraudes internas. Dev nunca deve ter acesso de escrita em Prod. Quem pede não aprova.", tag: "Segurança" },
+            { id: 3, title: "ITIL: Incidente vs. Problema", description: "Incidente = Restaurar rápido (pode usar workaround/solução de contorno). Problema = Achar a causa raiz (resolver definitivamente/erro conhecido).", tag: "ITIL" },
+            { id: 4, title: "NIST 2.0 Govern", description: "A grande novidade do NIST 2.0 é a função GOVERN (Governar). Se a prova perguntar o que mudou do 1.1 para o 2.0, é a adição dessa função estratégica.", tag: "Atualização" },
+            { id: 5, title: "PMBOK 7 = Princípios", description: "O PMBOK 7 abandonou os 'processos' rígidos da v6 e foca em 12 Princípios e 8 Domínios. É agnóstico quanto à metodologia (Ágil, Preditiva, Híbrida).", tag: "PMBOK" },
+            { id: 6, title: "Cadeia de Valor ITIL (SVC)", description: "Memorize a sigla PIEDOE: Planejar, Improve (Melhorar), Engajar, Design & Transição, Obter/Construir, Entregar & Suportar.", tag: "Mnemônico" },
+            { id: 7, title: "Domínios COBIT", description: "EDM (Topo/Gov), APO (Planejamento), BAI (Projetos/Construção), DSS (Suporte/Dia a dia), MEA (Monitoramento).", tag: "Estrutura" },
+            { id: 8, title: "4 Dimensões ITIL", description: "Lembre-se de PIPT: Pessoas, Informação, Parceiros, T (Fluxos/Processos). Se esquecer uma, o serviço falha.", tag: "Mnemônico" },
+            { id: 9, title: "Agentes de Tratamento", description: "Controlador (decide) e Operador (executa). O DPO (Encarregado) é o meio de campo entre eles, os titulares e a ANPD.", tag: "LGPD" },
+            { id: 10, title: "Controles Gerais (ITGC)", description: "ITGCs são a base. Se o controle de acesso (ITGC) falha, o controle automático do sistema (Aplicação) não é confiável.", tag: "Auditoria" }
+        ];
+
+
+        // --- ESTADO GLOBAL E FUNÇÕES DE RENDERIZAÇÃO ---
+
+        let currentState = {
+            activeTab: AppTab.GUIDE,
+            isMenuOpen: false,
+            // Estado do Flashcard
+            flashcardIndex: 0,
+            isFlipped: false,
+            // Estado do Quiz
+            quizIndex: 0,
+            selectedOption: null,
+            isAnswered: false,
+            score: 0,
+            showResults: false,
+        };
+
+        const appRoot = document.getElementById('app-root');
+
+        // Função utilitária para renderizar ícones (usa a biblioteca Lucide global)
+        function renderIcon(name, size = 18) {
+            // Verifica se a função 'lucide' está disponível (carregada via script CDN no HTML)
+            if (typeof lucide === 'undefined' || !lucide.icons[name]) {
+                // Fallback simples
+                return `<span style="width: ${size}px; height: ${size}px; display: inline-block;">[${name}]</span>`;
+            }
+            
+            // Correção: Chama lucide.icons[name] para obter o objeto do ícone
+            // e então chama .toSvg() nesse objeto, garantindo que ele exista.
+            const iconObject = lucide.icons[name];
+            if (iconObject && typeof iconObject.toSvg === 'function') {
+                return iconObject.toSvg({ class: `${name}-icon`, width: size, height: size });
+            }
+            
+            // Fallback caso o ícone não tenha o método toSvg
+            return `<span style="width: ${size}px; height: ${size}px; display: inline-block;">[${name}]</span>`;
+        }
+
+        // Funções de atualização de estado e re-renderização
+        function setState(newState) {
+            Object.assign(currentState, newState);
+            renderApp();
+        }
+
+        // --- VIEWS ---
+
+        function renderStudyGuideView() {
+            let html = `
+            <div class="study-grid">
+                <div class="section-header">
+                    <h2 class="section-title">Guia de Estudo Consolidado</h2>
+                    <p class="section-desc">Resumo estratégico dos principais tópicos do edital.</p>
+                </div>
+                <div class="study-grid">
+            `;
+
+            studyTopics.forEach(topic => {
+                // Converte o formato Markdown-like do conteúdo
+                const contentHtml = topic.content
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Transforma **texto** em <strong>texto</strong>
+                    .replace(/\n/g, '<br />') // Quebra de linha
+                    .replace(/\* /g, '• '); // Listas em bullet point
+
+                html += `
+                    <div class="topic-card">
+                        <div class="topic-header">
+                            <h3 class="topic-title">${topic.title}</h3>
+                        </div>
+                        <div class="topic-content">
+                            ${contentHtml}
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `
+                </div>
+            </div>
+            `;
+            return html;
+        }
+
+        function renderFlashcardsView() {
+            const card = flashcardsData[currentState.flashcardIndex];
+            const totalCards = flashcardsData.length;
+
+            let html = `
+            <div class="flashcard-container">
+                <div class="flashcard-status">
+                    <h2 class="section-title">Flashcards de Revisão</h2>
+                    <p class="section-desc">Cartão ${currentState.flashcardIndex + 1} de ${totalCards}</p>
+                </div>
+
+                <div 
+                    class="flashcard-scene" 
+                    onclick="handleFlipCard()"
+                >
+                    <div id="flashcard-inner" class="flashcard-inner ${currentState.isFlipped ? 'flipped' : ''}">
+                        <!-- Frente -->
+                        <div class="flashcard-face flashcard-front">
+                            <span class="tag light">${card.topic}</span>
+                            <p class="card-text">${card.front}</p>
+                            <p class="hint-text">Toque para ver a resposta</p>
+                        </div>
+
+                        <!-- Verso -->
+                        <div class="flashcard-face flashcard-back">
+                            <span class="tag dark">Resposta</span>
+                            <p class="card-text">${card.back}</p>
+                            <p class="hint-text">Toque para voltar</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="controls">
+                    <button onclick="handlePrevCard()" class="control-btn secondary">
+                        (<<)
+                    </button>
+                    <button onclick="handleNextCard()" class="control-btn primary">
+                        (>>)
+                    </button>
+                </div>
+            </div>
+            `;
+            return html;
+        }
+
+        function renderQuizView() {
+            const totalQuestions = questionsData.length;
+
+            if (currentState.showResults) {
+                const percentage = Math.round((currentState.score / totalQuestions) * 100);
+                return `
+                <div class="results-container">
+                    <div class="results-card">
+                        <h2 class="section-title">Resultado Final</h2>
+                        <div class="score-percent">${percentage}%</div>
+                        <p class="section-desc" style="margin-bottom: 1.5rem;">Você acertou ${currentState.score} de ${totalQuestions} questões.</p>
+                        <button onclick="resetQuiz()" class="restart-btn">
+                            ${renderIcon('RefreshCw', 20)} Tentar Novamente
+                        </button>
+                    </div>
+                </div>
+                `;
+            }
+
+            const question = questionsData[currentState.quizIndex];
+            let optionsHtml = '';
+            
+            question.options.forEach((opt, idx) => {
+                let btnClass = 'option-btn';
+                if (currentState.isAnswered) {
+                    if (idx === question.correctAnswer) btnClass += ' correct';
+                    else if (idx === currentState.selectedOption) btnClass += ' incorrect';
+                    btnClass += ' disabled';
+                } else if (idx === currentState.selectedOption) {
+                    btnClass += ' selected';
+                }
+
+                optionsHtml += `
+                    <button 
+                        onclick="handleOptionSelect(${idx})"
+                        class="${btnClass}"
+                        ${currentState.isAnswered ? 'disabled' : ''}
+                    >
+                        ${opt}
+                    </button>
+                `;
+            });
+
+            let feedbackHtml = '';
+            if (currentState.isAnswered) {
+                const isCorrect = currentState.selectedOption === question.correctAnswer;
+                const icon = renderIcon(isCorrect ? 'CheckCircle' : 'XCircle', 24);
+                const title = isCorrect ? 'Correto!' : 'Incorreto';
+                const cardClass = isCorrect ? 'success' : 'error';
+
+                feedbackHtml = `
+                    <div class="feedback-card ${cardClass}">
+                        ${icon}
+                        <div class="feedback-content">
+                            <span class="feedback-title">${title}</span>
+                            <p class="feedback-explanation">${question.explanation}</p>
+                        </div>
+                    </div>
+                `;
+            }
+
+            const actionButton = currentState.isAnswered ? `
+                <button 
+                    onclick="handleNextQuestion()"
+                    class="action-btn next"
+                >
+                    ${currentState.quizIndex < totalQuestions - 1 ? 'Próxima Questão' : 'Ver Resultados'}
+                </button>
+            ` : `
+                <button 
+                    onclick="handleSubmitQuiz()" 
+                    ${currentState.selectedOption === null ? 'disabled' : ''}
+                    class="action-btn confirm"
+                >
+                    Confirmar Resposta
+                </button>
+            `;
+
+            return `
+            <div class="quiz-container">
+                <div class="quiz-header">
+                    <span class="quiz-counter">Questão ${currentState.quizIndex + 1} de ${totalQuestions}</span>
+                    <span class="quiz-tag">${question.topic}</span>
+                </div>
+
+                <div class="question-card">
+                    <h3 class="question-text">${question.text}</h3>
+                    
+                    <div class="options-list">
+                        ${optionsHtml}
+                    </div>
+                </div>
+
+                ${feedbackHtml}
+
+                <div class="quiz-actions">
+                    ${actionButton}
+                </div>
+            </div>
+            `;
+        }
+
+        function renderTipsView() {
+            let html = `
+            <div class="tips-container">
+                <div class="tips-header">
+                    <h2 class="section-title">Dicas & Macetes</h2>
+                    <p class="section-desc">Pontos de atenção para a prova.</p>
+                </div>
+
+                <div class="tips-grid">
+            `;
+
+            tipsData.forEach(tip => {
+                html += `
+                    <div class="tip-card">
+                        <div class="tip-header">
+                            <h3 class="tip-title">${tip.title}</h3>
+                            <span class="tip-tag">${tip.tag}</span>
+                        </div>
+                        <p class="tip-desc">${tip.description}</p>
+                    </div>
+                `;
+            });
+
+            html += `
+                </div>
+            </div>
+            `;
+            return html;
+        }
+
+        // --- CONTROLADORES DE EVENTOS ---
+
+        function handleTabChange(tab) {
+            setState({ activeTab: tab, isMenuOpen: false });
+        }
+
+        function handleMenuToggle() {
+            setState({ isMenuOpen: !currentState.isMenuOpen });
+        }
+
+        // Flashcard Handlers
+        function handleFlipCard() {
+            setState({ isFlipped: !currentState.isFlipped });
+        }
+
+        function handleNextCard() {
+            const nextIndex = (currentState.flashcardIndex + 1) % flashcardsData.length;
+            // Adiciona um pequeno delay para a animação de flip
+            setState({ isFlipped: false });
+            setTimeout(() => {
+                setState({ flashcardIndex: nextIndex });
+            }, 200);
+        }
+
+        function handlePrevCard() {
+            const prevIndex = (currentState.flashcardIndex - 1 + flashcardsData.length) % flashcardsData.length;
+            // Adiciona um pequeno delay para a animação de flip
+            setState({ isFlipped: false });
+            setTimeout(() => {
+                setState({ flashcardIndex: prevIndex });
+            }, 200);
+        }
+
+        // Quiz Handlers
+        function handleOptionSelect(idx) {
+            if (currentState.isAnswered) return;
+            setState({ selectedOption: idx });
+        }
+
+        function handleSubmitQuiz() {
+            if (currentState.selectedOption === null) return;
+            const question = questionsData[currentState.quizIndex];
+            const isCorrect = currentState.selectedOption === question.correctAnswer;
+            
+            if (isCorrect) {
+                setState({ isAnswered: true, score: currentState.score + 1 });
+            } else {
+                setState({ isAnswered: true });
+            }
+        }
+
+        function handleNextQuestion() {
+            if (currentState.quizIndex < questionsData.length - 1) {
+                setState({
+                    quizIndex: currentState.quizIndex + 1,
+                    selectedOption: null,
+                    isAnswered: false,
+                });
+            } else {
+                setState({ showResults: true });
+            }
+        }
+
+        function resetQuiz() {
+            setState({
+                quizIndex: 0,
+                selectedOption: null,
+                isAnswered: false,
+                score: 0,
+                showResults: false,
+            });
+        }
+
+        // Expõe handlers para o escopo global do HTML
+        window.handleTabChange = handleTabChange;
+        window.handleMenuToggle = handleMenuToggle;
+        window.handleFlipCard = handleFlipCard;
+        window.handleNextCard = handleNextCard;
+        window.handlePrevCard = handlePrevCard;
+        window.handleOptionSelect = handleOptionSelect;
+        window.handleSubmitQuiz = handleSubmitQuiz;
+        window.handleNextQuestion = handleNextQuestion;
+        window.resetQuiz = resetQuiz;
+
+
+        // --- RENDERIZAÇÃO PRINCIPAL (HTML) ---
+
+        function renderApp() {
+            if (!appRoot) return;
+
+            // Adiciona classe para controlar o menu mobile via CSS
+            appRoot.className = `app-container ${currentState.isMenuOpen ? 'menu-open' : ''}`;
+
+            let mainContentHtml = '';
+            switch (currentState.activeTab) {
+                case AppTab.GUIDE:
+                    mainContentHtml = renderStudyGuideView();
+                    break;
+                case AppTab.FLASHCARDS:
+                    mainContentHtml = renderFlashcardsView();
+                    break;
+                case AppTab.QUIZ:
+                    mainContentHtml = renderQuizView();
+                    break;
+                case AppTab.TIPS:
+                    mainContentHtml = renderTipsView();
+                    break;
+            }
+
+            // Estrutura completa da aplicação
+            appRoot.innerHTML = `
+                <!-- Header -->
+                <header class="header">
+                    <div class="header-content">
+                        <div class="logo-area">
+                            
+                            <div>
+                                <h1 class="app-title">Governança de TI</h1>
+                                <p class="app-subtitle">Guia de Estudo - 2025</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Botão Menu Mobile -->
+                        <button 
+                            class="mobile-menu-btn"
+                            onclick="handleMenuToggle()"
+                        >
+                            ${currentState.isMenuOpen ? renderIcon('X', 24) : renderIcon('Menu', 24)}
+                        </button>
+
+                        <!-- Nav Desktop -->
+                        <nav class="desktop-nav">
+                            <button class="nav-btn ${currentState.activeTab === AppTab.GUIDE ? 'active' : 'inactive'}" onclick="handleTabChange(AppTab.GUIDE)">
+                                 Guia
+                            </button>
+                            <button class="nav-btn ${currentState.activeTab === AppTab.FLASHCARDS ? 'active' : 'inactive'}" onclick="handleTabChange(AppTab.FLASHCARDS)">
+                                 Flashcards
+                            </button>
+                            <button class="nav-btn ${currentState.activeTab === AppTab.QUIZ ? 'active' : 'inactive'}" onclick="handleTabChange(AppTab.QUIZ)">
+                                 Questões
+                            </button>
+                            <button class="nav-btn ${currentState.activeTab === AppTab.TIPS ? 'active' : 'inactive'}" onclick="handleTabChange(AppTab.TIPS)">
+                                Dicas
+                            </button>
+                        </nav>
+                    </div>
+
+                    <!-- Nav Mobile Dropdown (Controlado pelo CSS/JS) -->
+                    <div class="mobile-nav-dropdown">
+                        <div class="nav-list">
+                            <button class="mobile-nav-btn ${currentState.activeTab === AppTab.GUIDE ? 'active' : 'inactive'}" onclick="handleTabChange(AppTab.GUIDE)">
+                                ${renderIcon('BookOpen', 18)} Guia de Estudo
+                            </button>
+                            <button class="mobile-nav-btn ${currentState.activeTab === AppTab.FLASHCARDS ? 'active' : 'inactive'}" onclick="handleTabChange(AppTab.FLASHCARDS)">
+                                ${renderIcon('Copy', 18)} Flashcards
+                            </button>
+                            <button class="mobile-nav-btn ${currentState.activeTab === AppTab.QUIZ ? 'active' : 'inactive'}" onclick="handleTabChange(AppTab.QUIZ)">
+                                ${renderIcon('Brain', 18)} Questões
+                            </button>
+                            <button class="mobile-nav-btn ${currentState.activeTab === AppTab.TIPS ? 'active' : 'inactive'}" onclick="handleTabChange(AppTab.TIPS)">
+                                ${renderIcon('Lightbulb', 18)} Dicas & Macetes
+                            </button>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- Main Content -->
+                <main class="main-content">
+                    ${mainContentHtml}
+                </main>
+
+                <!-- Footer -->
+                <footer class="footer">
+                    <p>Guia de Estudos - Governança - 2025</p>
+                    <p class="footer-sub">Baseado em ITIL 4, COBIT 2019, PMBOK 7, NIST CSF 2.0</p>
+                </footer>
+            `;
+        }
+
+        // Inicia a aplicação após o carregamento da janela
+        window.onload = function() {
+            renderApp();
+        };
+    </script>
+</body>
+</html>
